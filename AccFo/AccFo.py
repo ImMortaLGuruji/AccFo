@@ -7,6 +7,8 @@ cwd = os.getcwd()
 dir = os.path.join(cwd + "/assets")
 if not os.path.exists(dir):
     os.mkdir(dir)
+with open(os.path.join(dir, "passwords.txt"), 'w') as file:
+    pass
 
 
 def keyGen():
@@ -93,9 +95,40 @@ def gen():
     print("Generated password: " + password)
 
 
+def remove():
+    info = []
+    with open("assets/passwords.txt", 'r') as file:
+        info = file.readlines()
+
+    if len(info) <= 0:
+        print("You have not saved anything yet!\n")
+
+    else:
+        lineNum = int(
+            input("Which account info would you like to delete: "))
+        data = []
+        with open("assets/passwords.txt", 'r') as file:
+            data = file.readlines()
+
+        if lineNum > len(data):
+            print("Invalid number\n")
+        else:
+            with open("assets/passwords.txt", 'w') as file:
+                for number, line in enumerate(data):
+                    if number not in [lineNum - 1]:
+                        file.write(line)
+
+            print("successfully removed!\n")
+
+
 def view():
-    if os.path.isfile("assets/passwords.txt") == False:
-        print("You have not saved anything yet!")
+    info = []
+    with open("assets/passwords.txt", 'r') as file:
+        info = file.readlines()
+
+    if len(info) <= 0:
+        print("You have not saved anything yet!\n")
+
     else:
         with open('assets/passwords.txt', 'r') as file:
             for line in file.readlines():
@@ -107,11 +140,13 @@ def view():
 
 running = True
 while running:
-    mode = input("What would you like to do (add/gen/view/quit)? ").lower()
+    mode = input("What would you like to do (add/gen/rmv/view/quit)? ").lower()
     if mode == "add":
         add()
     elif mode == "gen":
         gen()
+    elif mode == "rmv":
+        remove()
     elif mode == "view":
         view()
     elif mode == "quit":

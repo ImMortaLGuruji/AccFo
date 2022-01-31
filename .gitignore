@@ -1,4 +1,6 @@
-Accfo(oop)
-pygame
-AccountInfo.kv
+assets
+add.py
+gen.py
 main.py
+remove.py
+view.py
