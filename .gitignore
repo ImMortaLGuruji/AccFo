@@ -1,6 +1,2 @@
-assets
-add.py
-gen.py
-main.py
-remove.py
-view.py
+__pycache__
+assets/functions/__pycache__
