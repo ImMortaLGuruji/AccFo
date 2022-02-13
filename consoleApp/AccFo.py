@@ -4,7 +4,7 @@ import random
 import array
 
 cwd = os.getcwd()
-dir = os.path.join(cwd + "/assets")
+dir = os.path.join(cwd + "/data")
 if not os.path.exists(dir):
     os.mkdir(dir)
 with open(os.path.join(dir, "passwords.txt"), 'a') as file:
@@ -13,14 +13,14 @@ with open(os.path.join(dir, "passwords.txt"), 'a') as file:
 
 def keyGen():
     key = Fernet.generate_key()
-    with open("assets/key.key", "wb") as keyFile:
+    with open("data/key.key", "wb") as keyFile:
         keyFile.write(key)
 
 
 def setKey():
-    if os.path.isfile("assets/key.key") == False:
+    if os.path.isfile("data/key.key") == False:
         keyGen()
-    with open("assets/key.key", "r") as keyFile:
+    with open("data/key.key", "r") as keyFile:
         key = keyFile.read()
     return key
 
@@ -77,7 +77,7 @@ def add():
     username = input("Username: ")
     password = input("Password: ")
 
-    with open('assets/passwords.txt', 'a') as file:
+    with open('data/passwords.txt', 'a') as file:
         file.write(serviceName + "\:-:/" + username + "\:-:/" +
                    fernet.encrypt(password.encode()).decode() + "\n")
 
@@ -88,7 +88,7 @@ def gen():
     passLen = int(input("Password length(8 - 25): "))
     password = genPwd(passLen)
 
-    with open('assets/passwords.txt', 'a') as file:
+    with open('data/passwords.txt', 'a') as file:
         file.write(serviceName + "\:-:/" + username + "\:-:/" +
                    fernet.encrypt(password.encode()).decode() + "\n")
 
@@ -97,7 +97,7 @@ def gen():
 
 def remove():
     info = []
-    with open("assets/passwords.txt", 'r') as file:
+    with open("data/passwords.txt", 'r') as file:
         info = file.readlines()
 
     if len(info) <= 0:
@@ -107,13 +107,13 @@ def remove():
         lineNum = int(
             input("Which account info would you like to delete: "))
         data = []
-        with open("assets/passwords.txt", 'r') as file:
+        with open("data/passwords.txt", 'r') as file:
             data = file.readlines()
 
         if lineNum > len(data) or lineNum <= 0:
             print("Invalid number\n")
         else:
-            with open("assets/passwords.txt", 'w') as file:
+            with open("data/passwords.txt", 'w') as file:
                 for number, line in enumerate(data):
                     if number not in [lineNum - 1]:
                         file.write(line)
@@ -123,14 +123,14 @@ def remove():
 
 def view():
     info = []
-    with open("assets/passwords.txt", 'r') as file:
+    with open("data/passwords.txt", 'r') as file:
         info = file.readlines()
 
     if len(info) <= 0:
         print("You have not saved anything yet!\n")
 
     else:
-        with open('assets/passwords.txt', 'r') as file:
+        with open('data/passwords.txt', 'r') as file:
             for line in file.readlines():
                 data = line.rstrip()
                 service, username, passw = data.split("\:-:/")
