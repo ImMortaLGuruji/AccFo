@@ -167,7 +167,7 @@ def saveError():
     errorTitle = RenderText("Account Info", font, (250, 23))
     errorErrorTitle = RenderText("Error", font, (250, 62))
     errorErrorMsg = RenderText(
-        "Sorry, you hanen't saved anything yet.", font, (250, 250))
+        "Sorry, you haven't saved anything yet.", font, (250, 250))
     errorBackBtn = Button("Back", font, (250, 450))
     while True:
         window.fill(BACKGROUND_COLOR)
@@ -188,16 +188,14 @@ def saveError():
         clock.tick(FPS)
 
 
-title = RenderText("Account Info", font, (250, 53))
-addBtn = Button("Add", font, (250, 130))
-generateBtn = Button("Generate", font, (250, 210))
-removeBtn = Button("Remove", font, (250, 290))
-viewBtn = Button("View", font, (250, 370))
-quitBtn = Button("Quit", font, (250, 450))
-
-
 def main():
     pygame.display.set_caption("AccFo")
+    title = RenderText("Account Info - AccFo", font, (250, 53))
+    addBtn = Button("Add", font, (250, 130))
+    generateBtn = Button("Generate", font, (250, 210))
+    removeBtn = Button("Remove", font, (250, 290))
+    viewBtn = Button("View", font, (250, 370))
+    quitBtn = Button("Quit", font, (250, 450))
     while True:
         window.fill(BACKGROUND_COLOR)
 
