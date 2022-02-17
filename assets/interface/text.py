@@ -1,40 +1,43 @@
 import pygame
 import pyperclip
-from settings import *
+from assets.interface.config import *
 
 
-class RenderText:
-    def __init__(self, text, pos):
+class RenderText():
+    def __init__(self, text, font, pos):
         self.displaySurface = pygame.display.get_surface()
-        self.font = pygame.font.Font(FONTFILE, 24)
+        self.text = text
+        self.font = font
+        self.pos = pos
 
-        self.textSurface = self.font.render(str(text), True, TEXTCOLOR)
-        self.textRect = self.textSurface.get_rect(center=pos)
+        self.textSurface = self.font.render(self.text, True, TEXT_COLOR)
+        self.textRect = self.textSurface.get_rect(center=self.pos)
 
     def draw(self):
         self.displaySurface.blit(self.textSurface, self.textRect)
 
 
-class RenderTextWithBg:
-    def __init__(self, text, pos):
+class RenderTextWithBg():
+    def __init__(self, font, pos):
         self.displaySurface = pygame.display.get_surface()
-        self.font = pygame.font.Font(FONTFILE, 24)
-        self.text = text
+        self.font = font
+        self.bgRectColor = BUTTON_COLOR
+        self.pos = pos
         self.pressed = False
 
-        self.textSurface = self.font.render(
-            str(self.text), True, TEXTCOLOR)
-        self.textRect = self.textSurface.get_rect(center=pos)
+    def draw(self, text):
+        self.text = text
+
+        self.textSurface = self.font.render(self.text, True, TEXT_COLOR)
+        self.textRect = self.textSurface.get_rect(center=self.pos)
 
         self.bgRect = pygame.Rect((0, 0), (0, 0))
         self.bgRect.height = 50
-        self.bgRect.width = self.textSurface.get_width() + 26
+        self.bgRect.width = (self.textSurface.get_width() + 26)
         self.bgRect.center = self.textRect.center
 
-    def draw(self):
-        pygame.draw.rect(self.displaySurface, BUTTONCOLOR, self.bgRect)
+        pygame.draw.rect(self.displaySurface, self.bgRectColor, self.bgRect)
         self.displaySurface.blit(self.textSurface, self.textRect)
-        self.clickCheck()
 
     def clickCheck(self):
         mousePos = pygame.mouse.get_pos()
