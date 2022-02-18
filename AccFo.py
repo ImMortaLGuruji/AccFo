@@ -5,6 +5,7 @@ import os
 from assets.interface.config import *
 from assets.interface.button import Button
 from assets.interface.text import RenderText, RenderTextWithBg
+from assets.interface.input import InputBox
 from cryptography.fernet import Fernet
 
 cwd = os.getcwd()
@@ -13,10 +14,6 @@ if not os.path.exists(dir):
     os.mkdir(dir)
 with open(os.path.join(dir, "passwords.txt"), 'a') as file:
     pass
-
-info = []
-with open(PASSWORD_FILE, 'r') as file:
-    info = file.readlines()
 
 
 def keyGen():
@@ -49,7 +46,14 @@ font = pygame.font.Font(FONT_FILE_PATH, 24)
 
 def add():
     pygame.display.set_caption("AccFo - Add")
-    addBackBtn = Button("Back", font, (250, 250))
+    addTitle = RenderText("Account Info", font, (250, 23))
+    addAddTitle = RenderText("Add", font, (250, 62))
+    addSaveBtn = Button("Save", font, (250, 446))
+
+    addServiceName = InputBox("Service Name", font, (250, 152))
+    addUsername = InputBox("Username", font, (250, 250))
+    addPassword = InputBox("Password", font, (250, 348))
+
     while True:
         window.fill(BACKGROUND_COLOR)
 
@@ -57,9 +61,21 @@ def add():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            addServiceName.update(event)
+            addUsername.update(event)
+            addPassword.update(event)
 
-        addBackBtn.draw()
-        if addBackBtn.clickCheck():
+        addTitle.draw()
+        addAddTitle.draw()
+        addServiceName.draw()
+        addUsername.draw()
+        addPassword.draw()
+
+        addSaveBtn.draw()
+        if addSaveBtn.clickCheck():
+            with open(PASSWORD_FILE, 'a') as file:
+                file.write((addServiceName.save()) + "\:-:/" + (addUsername.save()) + "\:-:/" +
+                           fernet.encrypt((addPassword.save()).encode()).decode() + "\n")
             main()
 
         pygame.display.update()
@@ -189,6 +205,10 @@ def saveError():
 
 
 def main():
+    info = []
+    with open(PASSWORD_FILE, 'r') as file:
+        info = file.readlines()
+
     pygame.display.set_caption("AccFo")
     title = RenderText("Account Info - AccFo", font, (250, 53))
     addBtn = Button("Add", font, (250, 130))

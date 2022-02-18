@@ -33,12 +33,12 @@ class InputBox():
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.bgRect.collidepoint(event.pos):
                 self.active = True
-                if self.userInput == self.placeholder:
+                if self.userInput == self.placeHolder:
                     self.userInput = ''
             else:
                 self.active = False
                 if self.userInput == '':
-                    self.userInput = self.placeholder
+                    self.userInput = self.placeHolder
 
         if self.active == True:
             if event.type == pygame.KEYDOWN:
