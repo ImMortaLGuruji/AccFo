@@ -1,7 +1,8 @@
-import linecache
 import pygame
 import sys
 import os
+import random
+import array
 from assets.interface.config import *
 from assets.interface.button import Button
 from assets.interface.text import RenderText, RenderTextWithBg
@@ -32,6 +33,48 @@ def setKey():
 
 fernet = Fernet(setKey())
 
+
+def generatePassword(passLen):
+    if passLen <= 7:
+        passLen = 8
+    elif passLen >= 26:
+        passLen = 25
+
+    digits = ['0', '2', '3', '4', '5', '6', '7', '8', '9']
+
+    lowerCase = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+                 'i', 'j', 'k', 'm', 'n', 'o', 'p', 'q',
+                 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
+                 'z']
+
+    upperCase = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+                 'I', 'J', 'K', 'M', 'N', 'O', 'p', 'Q',
+                 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
+                 'Z']
+
+    symbols = ['!', '@', '#', '$', '%', '=', ':', '?', '.', '/', '|', '~', '>',
+               '*', '(', ')', '<']
+
+    combinedList = digits + lowerCase + upperCase + symbols
+    randDigit = random.choice(digits)
+    randLower = random.choice(lowerCase)
+    randUpper = random.choice(upperCase)
+    randSymbol = random.choice(symbols)
+
+    tempPwd = randDigit + randLower + randUpper + randSymbol
+
+    for x in range(passLen - 4):
+        tempPwd = tempPwd + random.choice(combinedList)
+        tempPwdList = array.array('u', tempPwd)
+        random.shuffle(tempPwdList)
+
+    password = ""
+    for x in tempPwdList:
+        password = password + x
+
+    return(password)
+
+
 pygame.init()
 
 iconImg = pygame.image.load(ICON_IMAGE_PATH)
@@ -48,11 +91,12 @@ def add():
     pygame.display.set_caption("AccFo - Add")
     addTitle = RenderText("Account Info", font, (250, 23))
     addAddTitle = RenderText("Add", font, (250, 62))
-    addSaveBtn = Button("Save", font, (250, 446))
+    addSaveBtn = Button("Save", font, (250, 373))
+    addBackBtn = Button("Back", font, (250, 452))
 
-    addServiceName = InputBox("Service Name", font, (250, 152))
-    addUsername = InputBox("Username", font, (250, 250))
-    addPassword = InputBox("Password", font, (250, 348))
+    addServiceName = InputBox("Service Name", font, (250, 139))
+    addUsername = InputBox("Username", font, (250, 217))
+    addPassword = InputBox("Password", font, (250, 295))
 
     while True:
         window.fill(BACKGROUND_COLOR)
@@ -74,8 +118,12 @@ def add():
         addSaveBtn.draw()
         if addSaveBtn.clickCheck():
             with open(PASSWORD_FILE, 'a') as file:
-                file.write((addServiceName.save()) + "\:-:/" + (addUsername.save()) + "\:-:/" +
-                           fernet.encrypt((addPassword.save()).encode()).decode() + "\n")
+                file.write(addServiceName.save() + "\:-:/" + addUsername.save() + "\:-:/" +
+                           fernet.encrypt(addPassword.save().encode()).decode() + "\n")
+            main()
+
+        addBackBtn.draw()
+        if addBackBtn.clickCheck():
             main()
 
         pygame.display.update()
@@ -103,16 +151,60 @@ def generate():
 
 def remove():
     pygame.display.set_caption("AccFo - Remove")
-    rmvBackBtn = Button("Back", font, (250, 250))
+
+    data = []
+    with open(PASSWORD_FILE, 'r') as file:
+        data = file.readlines()
+
+    rmvLineNum = 1
+    rmvTitle = RenderText("Account Info", font, (250, 23))
+    rmvRmvTitle = RenderText("Remove", font, (250, 62))
+    rmvUpBtn = Button("Up", font, (250, 86+25))
+    rmvDownBtn = Button("Down", font, (250, 347))
+    rmvRmvBtn = Button("Remove", font, (250, 406))
+    rmvBackBtn = Button("Back", font, (250, 465))
+
+    rmvServiceTxt = RenderTextWithBg(font, (250, 170))
+    rmvUsernameTxt = RenderTextWithBg(font, (250, 229))
+    rmvPasswordTxt = RenderTextWithBg(font, (250, 288))
     while True:
         window.fill(BACKGROUND_COLOR)
+
+        if rmvLineNum <= 0:
+            rmvLineNum = 1
+        if rmvLineNum > len(data):
+            rmvLineNum = len(data)
+
+        line = (data[rmvLineNum - 1].rstrip())
+
+        service, username, passw = line.split("\:-:/")
+        password = (fernet.decrypt(passw.encode()).decode())
+
+        rmvServiceTxt.draw(service)
+        rmvUsernameTxt.draw(username)
+        rmvPasswordTxt.draw(password)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
+        rmvTitle.draw()
+        rmvRmvTitle.draw()
+        rmvUpBtn.draw()
+        rmvDownBtn.draw()
+        rmvRmvBtn.draw()
         rmvBackBtn.draw()
+        if rmvUpBtn.clickCheck():
+            rmvLineNum -= 1
+        if rmvDownBtn.clickCheck():
+            rmvLineNum += 1
+        if rmvRmvBtn.clickCheck():
+            with open(PASSWORD_FILE, 'w') as file:
+                for number, line in enumerate(data):
+                    if number not in [rmvLineNum - 1]:
+                        file.write(line)
+            main()
         if rmvBackBtn.clickCheck():
             main()
 
@@ -122,6 +214,11 @@ def remove():
 
 def view():
     pygame.display.set_caption("AccFo - View")
+
+    data = []
+    with open(PASSWORD_FILE, 'r') as file:
+        data = file.readlines()
+
     viewLineNum = 1
     viewTitle = RenderText("Account Info", font, (250, 23))
     viewViewTitle = RenderText("View", font, (250, 62))
@@ -135,24 +232,15 @@ def view():
     while True:
         window.fill(BACKGROUND_COLOR)
 
-        data = []
-        with open(PASSWORD_FILE, 'r') as file:
-            data = file.readlines()
-
         if viewLineNum <= 0:
             viewLineNum = 1
         if viewLineNum > len(data):
             viewLineNum = len(data)
 
-        line = (linecache.getline(PASSWORD_FILE, viewLineNum).rstrip())
+        line = (data[viewLineNum - 1].rstrip())
 
         service, username, passw = line.split("\:-:/")
         password = (fernet.decrypt(passw.encode()).decode())
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
 
         viewServiceTxt.draw(service)
         viewUsernameTxt.draw(username)
@@ -161,6 +249,11 @@ def view():
         viewServiceTxt.clickCheck()
         viewUsernameTxt.clickCheck()
         viewPasswordTxt.clickCheck()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
 
         viewTitle.draw()
         viewViewTitle.draw()
