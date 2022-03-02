@@ -1,44 +1,66 @@
+# importing modules
 import pygame
-import sys
-import os
 import random
-import array
 from assets.interface.config import *
+from sys import exit
+from os import getcwd, path, mkdir
+from cryptography.fernet import Fernet
+from array import array
 from assets.interface.button import Button
 from assets.interface.text import RenderText, RenderTextWithBg
 from assets.interface.input import InputBox
-from cryptography.fernet import Fernet
 
-cwd = os.getcwd()
-dir = os.path.join(cwd + "/data")
-if not os.path.exists(dir):
-    os.mkdir(dir)
-with open(os.path.join(dir, "passwords.txt"), 'a') as file:
+# creating the password file if it doesn't exist
+cwd = getcwd()
+dir = path.join(cwd + "/data")
+if not path.exists(dir):
+    mkdir(dir)
+with open(path.join(dir, "passwords.txt"), 'a') as file:
     pass
 
 
+# generating key
 def keyGen():
     key = Fernet.generate_key()
     with open(KEY_FILE, "wb") as keyFile:
         keyFile.write(key)
 
 
+# setting the key
 def setKey():
-    if os.path.isfile(KEY_FILE) == False:
+    if path.isfile(KEY_FILE) == False:
         keyGen()
     with open(KEY_FILE, "r") as keyFile:
         key = keyFile.read()
     return key
 
 
+# initializing fernet
 fernet = Fernet(setKey())
 
+# initializing pygame
+pygame.init()
 
-def generatePassword(passLen):
-    if passLen <= 7:
-        passLen = 8
-    elif passLen >= 26:
-        passLen = 25
+# loading icon image
+iconImg = pygame.image.load(ICON_IMAGE_PATH)
+
+# window settings
+app = pygame.display.set_mode(WINDOW_SIZE)
+pygame.display.set_icon(iconImg)
+
+# limiting FPS
+clock = pygame.time.Clock()
+
+# font
+font = pygame.font.Font(FONT_FILE_PATH, 24)
+
+
+# function to generate password of a given length
+def generatePassword(passwordLength):
+    if passwordLength <= 7:
+        passwordLength = 8
+    elif passwordLength >= 26:
+        passwordLength = 25
 
     digits = ['0', '2', '3', '4', '5', '6', '7', '8', '9']
 
@@ -63,9 +85,9 @@ def generatePassword(passLen):
 
     tempPwd = randDigit + randLower + randUpper + randSymbol
 
-    for x in range(passLen - 4):
+    for x in range(passwordLength - 4):
         tempPwd = tempPwd + random.choice(combinedList)
-        tempPwdList = array.array('u', tempPwd)
+        tempPwdList = array('u', tempPwd)
         random.shuffle(tempPwdList)
 
     password = ""
@@ -75,254 +97,286 @@ def generatePassword(passLen):
     return(password)
 
 
-pygame.init()
+# error function
+def error():
+    pygame.display.set_caption("AccFo - Error")
+    # title
+    title = RenderText("Account Info", font, (250, 23))
+    errorTitle = RenderText("Error", font, (250, 62))
+    # text
+    errorMsg = RenderText(
+        "Sorry, you haven't saved anything yet.", font, (250, 250))
+    # button
+    backBtn = Button("Back", font, (250, 450))
 
-iconImg = pygame.image.load(ICON_IMAGE_PATH)
+    UIElements = [title, errorTitle, errorMsg, backBtn]
 
-window = pygame.display.set_mode(WINDOW_SIZE)
-pygame.display.set_caption("AccFo")
-pygame.display.set_icon(iconImg)
+    while True:
+        app.fill(BACKGROUND_COLOR)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
 
-clock = pygame.time.Clock()
-font = pygame.font.Font(FONT_FILE_PATH, 24)
+        for element in UIElements:
+            element.draw()
+
+        if backBtn.clickCheck():
+            main()
+
+        pygame.display.update()
+        clock.tick(FPS)
 
 
+# add function
 def add():
     pygame.display.set_caption("AccFo - Add")
-    addTitle = RenderText("Account Info", font, (250, 23))
-    addAddTitle = RenderText("Add", font, (250, 62))
-    addSaveBtn = Button("Save", font, (250, 373))
-    addBackBtn = Button("Back", font, (250, 452))
+    # title
+    title = RenderText("Account Info", font, (250, 23))
+    addTitle = RenderText("Add", font, (250, 62))
+    # buttons
+    saveBtn = Button("Save", font, (250, 373))
+    backBtn = Button("Back", font, (250, 452))
+    # input boxes
+    serviceName = InputBox("Service Name", font, (250, 139))
+    username = InputBox("Username", font, (250, 217))
+    password = InputBox("Password", font, (250, 295))
 
-    addServiceName = InputBox("Service Name", font, (250, 139))
-    addUsername = InputBox("Username", font, (250, 217))
-    addPassword = InputBox("Password", font, (250, 295))
+    UIElements = [title, addTitle, saveBtn,
+                  backBtn, serviceName, username, password]
 
     while True:
-        window.fill(BACKGROUND_COLOR)
-
+        app.fill(BACKGROUND_COLOR)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                sys.exit()
-            addServiceName.update(event)
-            addUsername.update(event)
-            addPassword.update(event)
+                exit()
+            serviceName.update(event)
+            username.update(event)
+            password.update(event)
 
-        addTitle.draw()
-        addAddTitle.draw()
-        addServiceName.draw()
-        addUsername.draw()
-        addPassword.draw()
+        for element in UIElements:
+            element.draw()
 
-        addSaveBtn.draw()
-        if addSaveBtn.clickCheck():
+        if saveBtn.clickCheck():
             with open(PASSWORD_FILE, 'a') as file:
-                file.write(addServiceName.save() + "\:-:/" + addUsername.save() + "\:-:/" +
-                           fernet.encrypt(addPassword.save().encode()).decode() + "\n")
+                file.write(serviceName.save() + "\:-:/" + username.save() + "\:-:/" +
+                           fernet.encrypt(password.save().encode()).decode() + "\n")
             main()
 
-        addBackBtn.draw()
-        if addBackBtn.clickCheck():
+        if backBtn.clickCheck():
             main()
 
         pygame.display.update()
         clock.tick(FPS)
 
 
+# generate function
 def generate():
     pygame.display.set_caption("AccFo - Generate")
-    genBackBtn = Button("Back", font, (250, 250))
-    while True:
-        window.fill(BACKGROUND_COLOR)
+    password = ''
+    # title
+    title = RenderText("Account Info", font, (250, 23))
+    genTitle = RenderText("Generate", font, (250, 62))
+    # button
+    genBtn = Button("Generate", font, (250, 312))
+    saveBtn = Button("Save", font, (250, 379))
+    backBtn = Button("Back", font, (250, 446))
+    # text with BG
+    passwordTxt = RenderTextWithBg(font, (250, 245))
+    # input box
+    serviceName = InputBox("Service Name", font, (250, 111))
+    username = InputBox("Username", font, (250, 178))
+    passwordLen = InputBox("Password Length(8-25)", font, (250, 245))
 
+    UIElements = [title, genTitle, genBtn,
+                  saveBtn, backBtn, serviceName, username]
+
+    while True:
+        app.fill(BACKGROUND_COLOR)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                sys.exit()
+                exit()
+            serviceName.update(event)
+            username.update(event)
+            if password == '':
+                passwordLen.update(event)
 
-        genBackBtn.draw()
-        if genBackBtn.clickCheck():
+        if password == '':
+            passwordLen.draw()
+
+        for element in UIElements:
+            element.draw()
+
+        if genBtn.clickCheck():
+            passwordLength = int(passwordLen.save())
+            password = generatePassword(passwordLength)
+        if saveBtn.clickCheck():
+            with open(PASSWORD_FILE, 'a') as file:
+                file.write(serviceName.save() + "\:-:/" + username.save() + "\:-:/" +
+                           fernet.encrypt((passwordTxt.text).encode()).decode() + "\n")
             main()
+        if backBtn.clickCheck():
+            main()
+
+        if not password == '':
+            passwordTxt.draw(password)
 
         pygame.display.update()
         clock.tick(FPS)
 
 
+# remove function
 def remove():
     pygame.display.set_caption("AccFo - Remove")
-
     data = []
     with open(PASSWORD_FILE, 'r') as file:
         data = file.readlines()
+    lineNum = 1
+    # title
+    title = RenderText("Account Info", font, (250, 23))
+    rmvTitle = RenderText("Remove", font, (250, 62))
+    # button
+    upBtn = Button("Up", font, (250, 86+25))
+    downBtn = Button("Down", font, (250, 347))
+    rmvBtn = Button("Remove", font, (250, 406))
+    backBtn = Button("Back", font, (250, 465))
+    # text
+    serviceTxt = RenderTextWithBg(font, (250, 170))
+    usernameTxt = RenderTextWithBg(font, (250, 229))
+    passwordTxt = RenderTextWithBg(font, (250, 288))
 
-    rmvLineNum = 1
-    rmvTitle = RenderText("Account Info", font, (250, 23))
-    rmvRmvTitle = RenderText("Remove", font, (250, 62))
-    rmvUpBtn = Button("Up", font, (250, 86+25))
-    rmvDownBtn = Button("Down", font, (250, 347))
-    rmvRmvBtn = Button("Remove", font, (250, 406))
-    rmvBackBtn = Button("Back", font, (250, 465))
+    UIElements = [title, rmvTitle, upBtn, downBtn, rmvBtn, backBtn]
 
-    rmvServiceTxt = RenderTextWithBg(font, (250, 170))
-    rmvUsernameTxt = RenderTextWithBg(font, (250, 229))
-    rmvPasswordTxt = RenderTextWithBg(font, (250, 288))
     while True:
-        window.fill(BACKGROUND_COLOR)
+        app.fill(BACKGROUND_COLOR)
 
-        if rmvLineNum <= 0:
-            rmvLineNum = 1
-        if rmvLineNum > len(data):
-            rmvLineNum = len(data)
+        if lineNum <= 0:
+            lineNum = 1
+        elif lineNum > len(data):
+            lineNum = len(data)
 
-        line = (data[rmvLineNum - 1].rstrip())
+        line = data[lineNum - 1].rstrip()
 
         service, username, passw = line.split("\:-:/")
         password = (fernet.decrypt(passw.encode()).decode())
 
-        rmvServiceTxt.draw(service)
-        rmvUsernameTxt.draw(username)
-        rmvPasswordTxt.draw(password)
+        serviceTxt.draw(service)
+        usernameTxt.draw(username)
+        passwordTxt.draw(password)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                sys.exit()
+                exit()
 
-        rmvTitle.draw()
-        rmvRmvTitle.draw()
-        rmvUpBtn.draw()
-        rmvDownBtn.draw()
-        rmvRmvBtn.draw()
-        rmvBackBtn.draw()
-        if rmvUpBtn.clickCheck():
-            rmvLineNum -= 1
-        if rmvDownBtn.clickCheck():
-            rmvLineNum += 1
-        if rmvRmvBtn.clickCheck():
+        for element in UIElements:
+            element.draw()
+
+        if upBtn.clickCheck():
+            lineNum -= 1
+        if downBtn.clickCheck():
+            lineNum += 1
+        if rmvBtn.clickCheck():
             with open(PASSWORD_FILE, 'w') as file:
                 for number, line in enumerate(data):
-                    if number not in [rmvLineNum - 1]:
+                    if number not in [lineNum - 1]:
                         file.write(line)
             main()
-        if rmvBackBtn.clickCheck():
+        if backBtn.clickCheck():
             main()
 
         pygame.display.update()
         clock.tick(FPS)
 
 
+# view function
 def view():
     pygame.display.set_caption("AccFo - View")
-
     data = []
     with open(PASSWORD_FILE, 'r') as file:
         data = file.readlines()
+    lineNum = 1
+    # title
+    title = RenderText("Account Info", font, (250, 23))
+    viewTitle = RenderText("View", font, (250, 62))
+    # button
+    upBtn = Button("Up", font, (250, 111))
+    downBtn = Button("Down", font, (250, 379))
+    backBtn = Button("Back", font, (250, 446))
+    # text
+    serviceTxt = RenderTextWithBg(font, (250, 178))
+    usernameTxt = RenderTextWithBg(font, (250, 245))
+    passwordTxt = RenderTextWithBg(font, (250, 312))
 
-    viewLineNum = 1
-    viewTitle = RenderText("Account Info", font, (250, 23))
-    viewViewTitle = RenderText("View", font, (250, 62))
-    viewUpBtn = Button("Up", font, (250, 111))
-    viewDownBtn = Button("Down", font, (250, 379))
-    viewBackBtn = Button("Back", font, (250, 446))
+    UIElements = [title, viewTitle, upBtn, downBtn, backBtn]
 
-    viewServiceTxt = RenderTextWithBg(font, (250, 178))
-    viewUsernameTxt = RenderTextWithBg(font, (250, 245))
-    viewPasswordTxt = RenderTextWithBg(font, (250, 312))
     while True:
-        window.fill(BACKGROUND_COLOR)
+        app.fill(BACKGROUND_COLOR)
+        if lineNum <= 0:
+            lineNum = 1
+        if lineNum > len(data):
+            lineNum = len(data)
 
-        if viewLineNum <= 0:
-            viewLineNum = 1
-        if viewLineNum > len(data):
-            viewLineNum = len(data)
-
-        line = (data[viewLineNum - 1].rstrip())
+        line = (data[lineNum - 1].rstrip())
 
         service, username, passw = line.split("\:-:/")
         password = (fernet.decrypt(passw.encode()).decode())
 
-        viewServiceTxt.draw(service)
-        viewUsernameTxt.draw(username)
-        viewPasswordTxt.draw(password)
+        serviceTxt.draw(service)
+        usernameTxt.draw(username)
+        passwordTxt.draw(password)
 
-        viewServiceTxt.clickCheck()
-        viewUsernameTxt.clickCheck()
-        viewPasswordTxt.clickCheck()
+        serviceTxt.clickCheck()
+        usernameTxt.clickCheck()
+        passwordTxt.clickCheck()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                sys.exit()
+                exit()
 
-        viewTitle.draw()
-        viewViewTitle.draw()
-        viewUpBtn.draw()
-        viewDownBtn.draw()
-        viewBackBtn.draw()
-        if viewUpBtn.clickCheck():
-            viewLineNum -= 1
-        if viewDownBtn.clickCheck():
-            viewLineNum += 1
-        if viewBackBtn.clickCheck():
+        for element in UIElements:
+            element.draw()
+
+        if upBtn.clickCheck():
+            lineNum -= 1
+        if downBtn.clickCheck():
+            lineNum += 1
+        if backBtn.clickCheck():
             main()
 
         pygame.display.update()
         clock.tick(FPS)
 
 
-def saveError():
-    pygame.display.set_caption("AccFo - Error")
-    errorTitle = RenderText("Account Info", font, (250, 23))
-    errorErrorTitle = RenderText("Error", font, (250, 62))
-    errorErrorMsg = RenderText(
-        "Sorry, you haven't saved anything yet.", font, (250, 250))
-    errorBackBtn = Button("Back", font, (250, 450))
-    while True:
-        window.fill(BACKGROUND_COLOR)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-        errorTitle.draw()
-        errorErrorTitle.draw()
-        errorErrorMsg.draw()
-        errorBackBtn.draw()
-        if errorBackBtn.clickCheck():
-            main()
-
-        pygame.display.update()
-        clock.tick(FPS)
-
-
+# main function
 def main():
+    pygame.display.set_caption("AccFo")
+
     info = []
     with open(PASSWORD_FILE, 'r') as file:
         info = file.readlines()
 
-    pygame.display.set_caption("AccFo")
     title = RenderText("Account Info - AccFo", font, (250, 53))
     addBtn = Button("Add", font, (250, 130))
     generateBtn = Button("Generate", font, (250, 210))
     removeBtn = Button("Remove", font, (250, 290))
     viewBtn = Button("View", font, (250, 370))
     quitBtn = Button("Quit", font, (250, 450))
-    while True:
-        window.fill(BACKGROUND_COLOR)
 
+    UIElements = [title, addBtn, generateBtn, removeBtn, viewBtn, quitBtn]
+
+    while True:
+        app.fill(BACKGROUND_COLOR)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                sys.exit()
+                exit()
 
-        title.draw()
-        addBtn.draw()
-        generateBtn.draw()
-        removeBtn.draw()
-        viewBtn.draw()
-        quitBtn.draw()
+        for element in UIElements:
+            element.draw()
 
         if addBtn.clickCheck():
             add()
@@ -330,20 +384,21 @@ def main():
             generate()
         if removeBtn.clickCheck():
             if len(info) <= 0:
-                saveError()
+                error()
             else:
                 remove()
         if viewBtn.clickCheck():
             if len(info) <= 0:
-                saveError()
+                error()
             else:
                 view()
         if quitBtn.clickCheck():
             pygame.quit()
-            sys.exit()
+            exit()
 
         pygame.display.update()
         clock.tick(FPS)
 
 
+# running main
 main()
