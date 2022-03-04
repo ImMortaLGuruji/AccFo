@@ -150,6 +150,47 @@ class RenderTextWithBg():
                     self.pressed = False
 
 
+# PasswordText class
+class PasswordText():
+    def __init__(self, font, pos):
+        self.displaySurface = pygame.display.get_surface()
+        self.font = font
+        self.bgRectColor = BUTTON_COLOR
+        self.pos = pos
+        self.pressed = False
+        self.hovering = False
+
+    def draw(self, text):
+        if self.hovering == True:
+            self.text = text
+        else:
+            self.text = "*" * len(text)
+
+        self.textSurface = self.font.render(self.text, True, TEXT_COLOR)
+        self.textRect = self.textSurface.get_rect(center=self.pos)
+
+        self.bgRect = pygame.Rect((0, 0), (0, 0))
+        self.bgRect.height = 50
+        self.bgRect.width = (self.textSurface.get_width() + 26)
+        self.bgRect.center = self.textRect.center
+
+        pygame.draw.rect(self.displaySurface, self.bgRectColor, self.bgRect)
+        self.displaySurface.blit(self.textSurface, self.textRect)
+
+    def clickCheck(self):
+        mousePos = pygame.mouse.get_pos()
+        if self.bgRect.collidepoint(mousePos):
+            self.hovering = True
+            if pygame.mouse.get_pressed()[2]:
+                self.pressed = True
+            else:
+                if self.pressed == True:
+                    pyperclip.copy(self.text)
+                    self.pressed = False
+        else:
+            self.hovering = False
+
+
 # creating the password file if it doesn't exist
 cwd = getcwd()
 dir = path.join(cwd + "/data")
@@ -385,7 +426,7 @@ def remove():
     # text
     serviceTxt = RenderTextWithBg(font, (250, 170))
     usernameTxt = RenderTextWithBg(font, (250, 229))
-    passwordTxt = RenderTextWithBg(font, (250, 288))
+    passwordTxt = PasswordText(font, (250, 288))
 
     UIElements = [title, rmvTitle, upBtn, downBtn, rmvBtn, backBtn]
 
@@ -448,7 +489,7 @@ def view():
     # text
     serviceTxt = RenderTextWithBg(font, (250, 178))
     usernameTxt = RenderTextWithBg(font, (250, 245))
-    passwordTxt = RenderTextWithBg(font, (250, 312))
+    passwordTxt = PasswordText(font, (250, 312))
 
     UIElements = [title, viewTitle, upBtn, downBtn, backBtn]
 
