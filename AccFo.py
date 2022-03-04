@@ -1,14 +1,154 @@
 # importing modules
 import pygame
 import random
+import pyperclip
 from assets.interface.config import *
 from sys import exit
 from os import getcwd, path, mkdir
 from cryptography.fernet import Fernet
 from array import array
-from assets.interface.button import Button
-from assets.interface.text import RenderText, RenderTextWithBg
-from assets.interface.input import InputBox
+
+
+# Button class
+class Button():
+    def __init__(self, text, font, pos):
+        self.displaySurface = pygame.display.get_surface()
+        self.font = font
+        self.bgRectColor = BUTTON_COLOR
+        self.pressed = False
+        self.action = False
+
+        self.textSurface = self.font.render(text, True, TEXT_COLOR)
+        self.textRect = self.textSurface.get_rect(center=pos)
+
+        self.bgRect = pygame.Rect((0, 0), (0, 0))
+        self.bgRect.height = 50
+        self.bgRect.width = max(250, (self.textSurface.get_width() + 26))
+        self.bgRect.center = self.textRect.center
+
+    def draw(self):
+        pygame.draw.rect(self.displaySurface, self.bgRectColor, self.bgRect)
+        self.displaySurface.blit(self.textSurface, self.textRect)
+
+        mousePos = pygame.mouse.get_pos()
+        if self.bgRect.collidepoint(mousePos):
+            self.bgRectColor = HOVER_COLOR
+        else:
+            self.bgRectColor = BUTTON_COLOR
+
+    def clickCheck(self):
+        self.action = False
+        mousePos = pygame.mouse.get_pos()
+
+        if self.bgRect.collidepoint(mousePos):
+            if pygame.mouse.get_pressed()[0]:
+                self.pressed = True
+            else:
+                if self.pressed == True:
+                    self.action = True
+                    self.pressed = False
+
+        return self.action
+
+
+# InputBox class
+class InputBox():
+    def __init__(self, placeHolder, font, pos):
+        self.displaySurface = pygame.display.get_surface()
+        self.font = font
+        self.placeHolder = placeHolder
+        self.userInput = self.placeHolder
+        self.bgRectColor = BUTTON_COLOR
+        self.pos = pos
+        self.active = False
+
+    def draw(self):
+        self.textSurface = self.font.render(self.userInput, True, TEXT_COLOR)
+        self.textRect = self.textSurface.get_rect(center=self.pos)
+
+        self.bgRect = pygame.Rect((0, 0), (0, 0))
+        self.bgRect.height = 50
+        self.bgRect.width = max(250, (self.textSurface.get_width() + 26))
+        self.bgRect.center = self.textRect.center
+
+        pygame.draw.rect(self.displaySurface, self.bgRectColor, self.bgRect)
+        self.displaySurface.blit(self.textSurface, self.textRect)
+
+        if self.active == True:
+            self.bgRectColor = HOVER_COLOR
+        else:
+            self.bgRectColor = BUTTON_COLOR
+
+    def update(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.bgRect.collidepoint(event.pos):
+                self.active = True
+                if self.userInput == self.placeHolder:
+                    self.userInput = ''
+            else:
+                self.active = False
+                if self.userInput == '':
+                    self.userInput = self.placeHolder
+
+        if self.active == True:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    self.userInput = self.userInput[:-1]
+                else:
+                    self.userInput += event.unicode
+
+    def save(self):
+        return self.userInput
+
+
+# RenderText class
+class RenderText():
+    def __init__(self, text, font, pos):
+        self.displaySurface = pygame.display.get_surface()
+        self.text = text
+        self.font = font
+        self.pos = pos
+
+        self.textSurface = self.font.render(self.text, True, TEXT_COLOR)
+        self.textRect = self.textSurface.get_rect(center=self.pos)
+
+    def draw(self):
+        self.displaySurface.blit(self.textSurface, self.textRect)
+
+
+# RenderTextWithBg class
+class RenderTextWithBg():
+    def __init__(self, font, pos):
+        self.displaySurface = pygame.display.get_surface()
+        self.font = font
+        self.bgRectColor = BUTTON_COLOR
+        self.pos = pos
+        self.pressed = False
+
+    def draw(self, text):
+        self.text = text
+
+        self.textSurface = self.font.render(self.text, True, TEXT_COLOR)
+        self.textRect = self.textSurface.get_rect(center=self.pos)
+
+        self.bgRect = pygame.Rect((0, 0), (0, 0))
+        self.bgRect.height = 50
+        self.bgRect.width = (self.textSurface.get_width() + 26)
+        self.bgRect.center = self.textRect.center
+
+        pygame.draw.rect(self.displaySurface, self.bgRectColor, self.bgRect)
+        self.displaySurface.blit(self.textSurface, self.textRect)
+
+    def clickCheck(self):
+        mousePos = pygame.mouse.get_pos()
+        if self.bgRect.collidepoint(mousePos):
+            if pygame.mouse.get_pressed()[2]:
+                self.pressed = True
+            else:
+                if self.pressed == True:
+                    pyperclip.copy(self.text)
+                    self.pressed = False
+
 
 # creating the password file if it doesn't exist
 cwd = getcwd()
