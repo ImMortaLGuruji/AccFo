@@ -391,8 +391,13 @@ def generate():
             element.draw()
 
         if genBtn.clickCheck():
-            passwordLength = int(passwordLen.save())
+            passwordLength = passwordLen.save()
+            if isinstance(passwordLength, int):
+                passwordLength = passwordLength
+            else:
+                passwordLength = 8
             password = generatePassword(passwordLength)
+
         if saveBtn.clickCheck():
             with open(PASSWORD_FILE, 'a') as file:
                 file.write(serviceName.save() + "\:-:/" + username.save() + "\:-:/" +
