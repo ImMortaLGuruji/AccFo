@@ -4,7 +4,7 @@ HEIGHT = 500
 WINDOW_SIZE = (WIDTH, HEIGHT)
 
 # file paths
-ICON_IMAGE_PATH = 'assets/images/AccFo.png'
+ICON_IMAGE_PATH = 'assets/images/main.png'
 FONT_FILE_PATH = 'assets/fonts/Righteous.ttf'
 KEY_FILE = 'data/key.key'
 PASSWORD_FILE = 'data/passwords.txt'
