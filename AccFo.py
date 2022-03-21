@@ -392,10 +392,11 @@ def generate():
 
         if genBtn.clickCheck():
             passwordLength = passwordLen.save()
-            if isinstance(passwordLength, int):
-                passwordLength = passwordLength
-            else:
-                passwordLength = 8
+            if not isinstance(passwordLength, int):
+                try:
+                    passwordLength = int(passwordLength)
+                except:
+                    passwordLength = 8
             password = generatePassword(passwordLength)
 
         if saveBtn.clickCheck():
