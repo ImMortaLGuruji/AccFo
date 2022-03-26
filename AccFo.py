@@ -218,20 +218,15 @@ def setKey():
 
 # initializing fernet
 fernet = Fernet(setKey())
-
 # initializing pygame
 pygame.init()
-
 # loading icon image
 iconImg = pygame.image.load(ICON_IMAGE_PATH)
-
 # window settings
 app = pygame.display.set_mode(WINDOW_SIZE)
 pygame.display.set_icon(iconImg)
-
 # limiting FPS
 clock = pygame.time.Clock()
-
 # font
 font = pygame.font.Font(FONT_FILE_PATH, 24)
 
@@ -400,10 +395,13 @@ def generate():
             password = generatePassword(passwordLength)
 
         if saveBtn.clickCheck():
-            with open(PASSWORD_FILE, 'a') as file:
-                file.write(serviceName.save() + "\:-:/" + username.save() + "\:-:/" +
-                           fernet.encrypt((passwordTxt.text).encode()).decode() + "\n")
-            main()
+            try:
+                with open(PASSWORD_FILE, 'a') as file:
+                    file.write(serviceName.save() + "\:-:/" + username.save() + "\:-:/" +
+                               fernet.encrypt((passwordTxt.text).encode()).decode() + "\n")
+                main()
+            except:
+                pass
         if backBtn.clickCheck():
             main()
 
