@@ -7,6 +7,7 @@ from sys import exit
 from os import getcwd, path, mkdir
 from cryptography.fernet import Fernet
 from array import array
+from time import time
 
 
 # Button class
@@ -218,6 +219,8 @@ def setKey():
 
 # initializing fernet
 fernet = Fernet(setKey())
+# time
+prevTime = ''
 # initializing pygame
 pygame.init()
 # loading icon image
@@ -229,6 +232,7 @@ pygame.display.set_icon(iconImg)
 clock = pygame.time.Clock()
 # font
 font = pygame.font.Font(FONT_FILE_PATH, 24)
+bigFont = pygame.font.Font(FONT_FILE_PATH, 48)
 
 
 # function to generate password of a given length
@@ -274,18 +278,18 @@ def generatePassword(passwordLength):
 
 
 # error function
-def error():
-    pygame.display.set_caption("AccFo - Error")
+def notification():
+    pygame.display.set_caption("AccFo - Notification")
     # title
     title = RenderText("Account Info", font, (250, 23))
-    errorTitle = RenderText("Error", font, (250, 62))
+    notificationTitle = RenderText("Error", font, (250, 62))
     # text
-    errorMsg = RenderText(
+    notificationMsg = RenderText(
         "Sorry, you haven't saved anything yet.", font, (250, 250))
     # button
     backBtn = Button("Back", font, (250, 450))
 
-    UIElements = [title, errorTitle, errorMsg, backBtn]
+    UIElements = [title, notificationTitle, notificationMsg, backBtn]
 
     while True:
         app.fill(BACKGROUND_COLOR)
@@ -569,12 +573,12 @@ def main():
             generate()
         if removeBtn.clickCheck():
             if len(info) <= 0:
-                error()
+                notification()
             else:
                 remove()
         if viewBtn.clickCheck():
             if len(info) <= 0:
-                error()
+                notification()
             else:
                 view()
         if quitBtn.clickCheck():
@@ -585,5 +589,37 @@ def main():
         clock.tick(FPS)
 
 
-# running main
-main()
+def landingPage():
+    global prevTime
+
+    pygame.display.set_caption("AccFo by ImMortaLGuruji")
+    # title
+    title = RenderText("Account Info", bigFont, (250, 200))
+    Msg = RenderText("By ImMortaLGuruji", font, (250, 250))
+
+    UIElements = [title, Msg]
+
+    while True:
+        app.fill(BACKGROUND_COLOR)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+        if prevTime == '':
+            prevTime = time()
+
+        nowTime = time()
+
+        for element in UIElements:
+            element.draw()
+
+        if nowTime - prevTime >= 2:
+            main()
+
+        pygame.display.update()
+        clock.tick(FPS)
+
+
+# running landingPage
+landingPage()
