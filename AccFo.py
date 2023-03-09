@@ -5,6 +5,7 @@ from cryptography.fernet import Fernet
 from random import choice, shuffle
 from array import array
 from pyperclip import copy
+from sys import exit
 
 # Initializing Application Window
 window = Tk()
@@ -36,7 +37,7 @@ info = []
 
 # Defigning Fonts
 HEADING_FONT = ('Regular', 22)
-TEXT_FONT = ('Regular', 16)
+LARGE_TEXT_FONT = ('Regular', 16)
 MEDIUM_TEXT_FONT = ('Regular', 12)
 SMALL_TEXT_FONT = ('Regular', 9)
 
@@ -272,6 +273,18 @@ def genPwd(passLen):
     return (password)
 
 
+# Popup window
+def popup(message):
+    popupWin = Toplevel(window)
+    popupWin.title("AccFo")
+    popupWin.configure(bg="white")
+    popupWin.resizable(False, False)
+    Label(popupWin, text=message, fg=TEXT,
+          bg='white', font=LARGE_TEXT_FONT).pack()
+    Button(popupWin, text="OK", fg='white', bg=PRIMARY, font=LARGE_TEXT_FONT,
+           border=0, cursor="hand2", command=popupWin.destroy).pack()
+
+
 # SignUp Frame
 def SignUp():
     window.title("AccFo - SignUp")
@@ -280,17 +293,18 @@ def SignUp():
     Label(frame, text="AccFo", bg="white", fg=PRIMARY,
           font=HEADING_FONT).place(x=655, y=50)
     Label(frame, text="Sign Up", bg="white", fg=PRIMARY,
-          font=TEXT_FONT).place(x=653, y=100)
+          font=LARGE_TEXT_FONT).place(x=653, y=100)
 
     username = TextInput("Username", frame, 553, 180)
     password = PasswordInput("Password", frame, 553, 262)
 
     def logUser():
         users.addUser(username.get(), password.get())
+        popup('Successfully signed up!')
         SignIn()
 
     Button(frame, text="Sign Up", bg=PRIMARY, fg='white', border=0, cursor='hand2',
-           font=TEXT_FONT, command=logUser).place(x=614, y=350, width=160, height=34)
+           font=LARGE_TEXT_FONT, command=logUser).place(x=614, y=350, width=160, height=34)
     Label(frame, text="Already have an account?", bg='white', fg=TEXT,
           font=SMALL_TEXT_FONT).place(x=576, y=420)
     Button(frame, text="Sign In", bg='white', fg=PRIMARY, border=0,
@@ -305,19 +319,20 @@ def SignIn():
     Label(frame, text="AccFo", bg="white", fg=PRIMARY,
           font=HEADING_FONT).place(x=655, y=50)
     Label(frame, text="Sign In", bg="white", fg=PRIMARY,
-          font=TEXT_FONT).place(x=658, y=100)
+          font=LARGE_TEXT_FONT).place(x=658, y=100)
 
     username = TextInput("Username", frame, 553, 180)
     password = PasswordInput("Password", frame, 553, 262)
 
     def validate():
         if users.login(username.get(), password.get()):
+            popup(f'Successfully logged in as {username.get()}!')
             Home(username.get())
         else:
-            pass
+            popup('Invalid username or password')
 
     Button(frame, text="Sign In", bg=PRIMARY, fg='white', border=0, cursor='hand2',
-           font=TEXT_FONT, command=validate).place(x=614, y=350, width=160, height=34)
+           font=LARGE_TEXT_FONT, command=validate).place(x=614, y=350, width=160, height=34)
     Label(frame, text="Don't have an account?", bg='white', fg=TEXT,
           font=SMALL_TEXT_FONT).place(x=581, y=420)
     Button(frame, text="Sign Up", bg='white', fg=PRIMARY, border=0,
@@ -338,22 +353,22 @@ def Home(username):
     window.title("AccFo")
     frame = Frame(window, width=925, height=500, bg='white').place(x=0, y=0)
     Label(frame, image=HomeImg, bg="white").place(x=42, y=124)
-    Label(frame, image=HomeTextImg, bg="white").place(x=353, y=444)
+    Label(frame, image=HomeTextImg, bg="white").place(x=348, y=444)
     Label(frame, text="AccFo", bg="white", fg=PRIMARY,
           font=HEADING_FONT).place(x=655, y=50)
     Label(frame, text="Home", bg="white", fg=PRIMARY,
-          font=TEXT_FONT).place(x=663, y=100)
+          font=LARGE_TEXT_FONT).place(x=663, y=100)
 
     Button(frame, text="Add", bg=PRIMARY, fg='white', border=0,
-           cursor='hand2', font=TEXT_FONT, command=lambda: Add(passwordFile, username)).place(x=614, y=168, width=160, height=34)
+           cursor='hand2', font=LARGE_TEXT_FONT, command=lambda: Add(passwordFile, username)).place(x=614, y=168, width=160, height=34)
     Button(frame, text="Generate", bg=PRIMARY, fg='white', border=0,
-           cursor='hand2', font=TEXT_FONT, command=lambda: Generate(passwordFile, username)).place(x=614, y=215, width=160, height=34)
+           cursor='hand2', font=LARGE_TEXT_FONT, command=lambda: Generate(passwordFile, username)).place(x=614, y=215, width=160, height=34)
     Button(frame, text="Remove", bg=PRIMARY, fg='white', border=0,
-           cursor='hand2', font=TEXT_FONT, command=lambda: Remove(passwordFile, username)).place(x=614, y=262, width=160, height=34)
+           cursor='hand2', font=LARGE_TEXT_FONT, command=lambda: Remove(passwordFile, username)).place(x=614, y=262, width=160, height=34)
     Button(frame, text="View", bg=PRIMARY, fg='white', border=0,
-           cursor='hand2', font=TEXT_FONT, command=lambda: View(passwordFile, username)).place(x=614, y=309, width=160, height=34)
+           cursor='hand2', font=LARGE_TEXT_FONT, command=lambda: View(passwordFile, username)).place(x=614, y=309, width=160, height=34)
     Button(frame, text="Quit", bg=PRIMARY, fg='white', border=0,
-           cursor='hand2', font=TEXT_FONT, command=exit).place(x=614, y=356, width=160, height=34)
+           cursor='hand2', font=LARGE_TEXT_FONT, command=exit).place(x=614, y=356, width=160, height=34)
 
 
 # Error Frame
@@ -364,12 +379,12 @@ def Error(username):
     Label(frame, text="AccFo", bg="white", fg=PRIMARY,
           font=HEADING_FONT).place(x=655, y=50)
     Label(frame, text="Error", bg="white", fg=PRIMARY,
-          font=TEXT_FONT).place(x=668, y=100)
+          font=LARGE_TEXT_FONT).place(x=668, y=100)
 
     Label(frame, text="You have not saved anything yet!",
-          bg='white', fg=TEXT, font=TEXT_FONT).place(x=535, y=202)
+          bg='white', fg=TEXT, font=LARGE_TEXT_FONT).place(x=535, y=202)
     Button(frame, text="Back", bg=PRIMARY, fg='white', border=0, cursor='hand2',
-           font=TEXT_FONT, command=lambda: Home(username)).place(x=614, y=367, width=160, height=34)
+           font=LARGE_TEXT_FONT, command=lambda: Home(username)).place(x=614, y=367, width=160, height=34)
 
 
 # Add Frame
@@ -380,16 +395,22 @@ def Add(passwordFile, user):
     Label(frame, text="AccFo", bg="white", fg=PRIMARY,
           font=HEADING_FONT).place(x=655, y=50)
     Label(frame, text="Add", bg="white", fg=PRIMARY,
-          font=TEXT_FONT).place(x=668, y=100)
+          font=LARGE_TEXT_FONT).place(x=668, y=100)
 
     service = TextInput("Service Name", frame, 553, 171)
     username = TextInput("Username", frame, 553, 230)
     password = TextInput("Password", frame, 553, 289)
 
-    Button(frame, text="Save", bg=PRIMARY, fg='white', border=0, cursor='hand2', font=TEXT_FONT, command=lambda: passwords.addData(
-        passwordFile, service.get(), username.get(), password.get())).place(x=524, y=367, width=160, height=34)
+    def addData():
+        passwords.addData(passwordFile, service.get(),
+                          username.get(), password.get())
+        popup('Successfully saved informaton!')
+        Add(passwordFile, user)
+
+    Button(frame, text="Save", bg=PRIMARY, fg='white', border=0, cursor='hand2',
+           font=LARGE_TEXT_FONT, command=addData).place(x=524, y=367, width=160, height=34)
     Button(frame, text="Back", bg=PRIMARY, fg='white', border=0, cursor='hand2',
-           font=TEXT_FONT, command=lambda: Home(user)).place(x=704, y=367, width=160, height=34)
+           font=LARGE_TEXT_FONT, command=lambda: Home(user)).place(x=704, y=367, width=160, height=34)
 
 
 # Generate Frame
@@ -400,7 +421,7 @@ def Generate(passwordFile, user):
     Label(frame, text="AccFo", bg="white", fg=PRIMARY,
           font=HEADING_FONT).place(x=655, y=50)
     Label(frame, text="Generate", bg="white", fg=PRIMARY,
-          font=TEXT_FONT).place(x=646, y=100)
+          font=LARGE_TEXT_FONT).place(x=646, y=100)
 
     service = TextInput("Service Name", frame, 553, 151)
     username = TextInput("Username", frame, 553, 203)
@@ -411,12 +432,18 @@ def Generate(passwordFile, user):
         password.place.delete(0, "end")
         password.place.insert(0, genPwd(int(passwordLength.get())))
 
-    Button(frame, text="Save", bg=PRIMARY, fg='white', border=0, cursor='hand2', font=TEXT_FONT, command=lambda: passwords.addData(
-        passwordFile, service.get(), username.get(), password.get())).place(x=524, y=367, width=160, height=34)
+    def addData():
+        passwords.addData(passwordFile, service.get(),
+                          username.get(), password.get())
+        popup('Successfully saved informaton!')
+        Generate(passwordFile, user)
+
+    Button(frame, text="Save", bg=PRIMARY, fg='white', border=0, cursor='hand2',
+           font=LARGE_TEXT_FONT, command=addData).place(x=524, y=367, width=160, height=34)
     Button(frame, text="Back", bg=PRIMARY, fg='white', border=0, cursor='hand2',
-           font=TEXT_FONT, command=lambda: Home(user)).place(x=704, y=367, width=160, height=34)
+           font=LARGE_TEXT_FONT, command=lambda: Home(user)).place(x=704, y=367, width=160, height=34)
     Button(frame, text="Generate", bg=PRIMARY, fg='white', border=0, cursor='hand2',
-           font=TEXT_FONT, command=place).place(x=615, y=411, width=160, height=34)
+           font=LARGE_TEXT_FONT, command=place).place(x=615, y=411, width=160, height=34)
 
 
 # Remove Frame
@@ -437,7 +464,7 @@ def Remove(passwordFile, user):
         Label(frame, text="AccFo", bg="white", fg=PRIMARY,
               font=HEADING_FONT).place(x=655, y=50)
         Label(frame, text="Remove", bg="white", fg=PRIMARY,
-              font=TEXT_FONT).place(x=651, y=100)
+              font=LARGE_TEXT_FONT).place(x=651, y=100)
 
         def update():
             global info, lineNum
@@ -469,6 +496,11 @@ def Remove(passwordFile, user):
                 lineNum = 0
             update()
 
+        def removeData():
+            passwords.removeData(passwordFile, lineNum)
+            popup('Successfully removed information!')
+            Remove(passwordFile, user)
+
         Button(frame, image=ArrowRightImg, bg="white",
                cursor="hand2", command=next, border=0).place(x=864, y=251)
         Button(frame, image=ArrowLeftImg, bg="white",
@@ -477,10 +509,10 @@ def Remove(passwordFile, user):
         username = UserOutput('Username', frame, 553, 230)
         password = UserOutput('Password', frame, 553, 289)
         update()
-        Button(frame, text="Remove", bg=PRIMARY, fg='white', border=0, cursor='hand2', font=TEXT_FONT,
-               command=lambda: passwords.removeData(passwordFile, lineNum)).place(x=524, y=367, width=160, height=34)
+        Button(frame, text="Remove", bg=PRIMARY, fg='white', border=0, cursor='hand2', font=LARGE_TEXT_FONT,
+               command=removeData).place(x=524, y=367, width=160, height=34)
         Button(frame, text="Back", bg=PRIMARY, fg='white', border=0, cursor='hand2',
-               font=TEXT_FONT, command=lambda: Home(user)).place(x=704, y=367, width=160, height=34)
+               font=LARGE_TEXT_FONT, command=lambda: Home(user)).place(x=704, y=367, width=160, height=34)
 
 
 # View Frame
@@ -502,7 +534,7 @@ def View(passwordFile, user):
         Label(frame, text="AccFo", bg="white", fg=PRIMARY,
               font=HEADING_FONT).place(x=655, y=50)
         Label(frame, text="View", bg="white", fg=PRIMARY,
-              font=TEXT_FONT).place(x=668, y=100)
+              font=LARGE_TEXT_FONT).place(x=668, y=100)
 
         def update():
             service.updateText(passwords.getData(
@@ -535,7 +567,7 @@ def View(passwordFile, user):
         password = UserOutput('Password', frame, 553, 289)
         update()
         Button(frame, text="Back", bg=PRIMARY, fg='white', border=0, cursor='hand2',
-               font=TEXT_FONT, command=lambda: Home(user)).place(x=614, y=367, width=160, height=34)
+               font=LARGE_TEXT_FONT, command=lambda: Home(user)).place(x=614, y=367, width=160, height=34)
 
 
 # Checking User Data
