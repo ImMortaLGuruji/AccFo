@@ -7,22 +7,28 @@ from array import array
 from pyperclip import copy
 from sys import exit
 
-# Initializing Application Window
+# Initializing Application Window In The Center Of Screen
 window = Tk()
 icon = PhotoImage(file="assets/images/icon.png")
 window.iconphoto(True, icon)
-window.geometry("925x500")
-window.title("AccFo")
-window.configure(bg="white")
 window.resizable(False, False)
+window.title("AccFo")
+windowWidth = 925
+windowHeight = 500
+screenWidth = window.winfo_screenwidth()
+screenHeight = window.winfo_screenheight()
+x = int((screenWidth/2) - (windowWidth/2))
+y = int((screenHeight/2) - (windowHeight/2))
+window.geometry(f"{windowWidth}x{windowHeight}+{x}+{y}")
+window.configure(bg="white")
 
 # Loading Images
 ArrowLeftImg = PhotoImage(file='assets/images/ArrowLeftImg.png')
 ArrowRightImg = PhotoImage(file='assets/images/ArrowRightImg.png')
-HomeTextImg = PhotoImage(file='assets/images/HomeTextImg.png')
 SignUpImg = PhotoImage(file='assets/images/SignUpImg.png')
 SignInImg = PhotoImage(file='assets/images/SignInImg.png')
 HomeImg = PhotoImage(file='assets/images/HomeImg.png')
+HomeTextImg = PhotoImage(file='assets/images/HomeTextImg.png')
 ErrorImg = PhotoImage(file='assets/images/ErrorImg.png')
 AddImg = PhotoImage(file='assets/images/AddImg.png')
 GenerateImg = PhotoImage(file='assets/images/GenerateImg.png')
@@ -99,6 +105,17 @@ class Users():
             name, pwd = line.split(self.divider)
             pwd = (fernet.decrypt(pwd.encode()).decode())
             if username == name and password == pwd:
+                return True
+        return False
+
+    def userCheck(self, username):
+        data = []
+        with open(USERS_FILE, 'r') as file:
+            data = file.readlines()
+        for lineNum in range(len(data)):
+            line = data[lineNum].rstrip()
+            name, pwd = line.split(self.divider)
+            if username == name:
                 return True
         return False
 
@@ -182,16 +199,40 @@ class PasswordInput():
 
 
 # User Output Box
-class UserOutput():
+class UserOutputButton():
     def __init__(self, value, frame, x, y):
         self.value = value
         self.button = Button(frame, text=self.value, font=MEDIUM_TEXT_FONT, bg="white", fg=TEXT, cursor="hand2",
-                             command=lambda: copy(self.value), border=0)
+                             command=self.copyText, border=0)
         self.button.place(x=x, y=y, width=281, height=29)
+
+    def copyText(self):
+        copy(self.value)
+        popup("Copied!")
 
     def updateText(self, value):
         self.value = value
         self.button['text'] = self.value
+
+    def updatePasswordText(self, value):
+        self.value = value
+        self.button['text'] = '----'
+
+
+class UserOutputText():
+    def __init__(self, value, frame, x, y):
+        self.value = value
+        self.label = Label(frame, text=self.value,
+                           font=MEDIUM_TEXT_FONT, bg="white", fg=TEXT)
+        self.label.place(x=x, y=y, width=281, height=29)
+
+    def updateText(self, value):
+        self.value = value
+        self.label['text'] = self.value
+
+    def updatePasswordText(self, value):
+        self.value = value
+        self.label['text'] = '----'
 
 
 # Read And Write Passwords
@@ -276,9 +317,10 @@ def genPwd(passLen):
 # Popup window
 def popup(message):
     popupWin = Toplevel(window)
-    popupWin.title("AccFo")
-    popupWin.configure(bg="white")
     popupWin.resizable(False, False)
+    popupWin.title("AccFo")
+    popupWin.geometry("400x75")
+    popupWin.configure(bg="white")
     Label(popupWin, text=message, fg=TEXT,
           bg='white', font=LARGE_TEXT_FONT).pack()
     Button(popupWin, text="OK", fg='white', bg=PRIMARY, font=LARGE_TEXT_FONT,
@@ -299,16 +341,28 @@ def SignUp():
     password = PasswordInput("Password", frame, 553, 262)
 
     def logUser():
-        users.addUser(username.get(), password.get())
-        popup('Successfully signed up!')
-        SignIn()
+        if users.userCheck(username.get()):
+            popup(f'{username.get()} already exists!')
+        else:
+            users.addUser(username.get(), password.get())
+            popup('Successfully signed up!')
+            SignIn()
+
+    def validate():
+        with open(USERS_FILE, 'r') as file:
+            config = file.readline().rstrip()
+            if not len(config) > 0:
+                popup("No accounts created!")
+                SignUp()
+            else:
+                SignIn()
 
     Button(frame, text="Sign Up", bg=PRIMARY, fg='white', border=0, cursor='hand2',
            font=LARGE_TEXT_FONT, command=logUser).place(x=614, y=350, width=160, height=34)
     Label(frame, text="Already have an account?", bg='white', fg=TEXT,
           font=SMALL_TEXT_FONT).place(x=576, y=420)
     Button(frame, text="Sign In", bg='white', fg=PRIMARY, border=0,
-           cursor='hand2', font=SMALL_TEXT_FONT, command=SignIn).place(x=718, y=420)
+           cursor='hand2', font=SMALL_TEXT_FONT, command=validate).place(x=718, y=420)
 
 
 # SignIn Frame
@@ -329,7 +383,7 @@ def SignIn():
             popup(f'Successfully logged in as {username.get()}!')
             Home(username.get())
         else:
-            popup('Invalid username or password')
+            popup('Invalid username or password!')
 
     Button(frame, text="Sign In", bg=PRIMARY, fg='white', border=0, cursor='hand2',
            font=LARGE_TEXT_FONT, command=validate).place(x=614, y=350, width=160, height=34)
@@ -475,7 +529,7 @@ def Remove(passwordFile, user):
                 passwordFile, lineNum, 'service'))
             username.updateText(passwords.getData(
                 passwordFile, lineNum, 'username'))
-            password.updateText(passwords.getData(
+            password.updatePasswordText(passwords.getData(
                 passwordFile, lineNum, 'password'))
             if lineNum > (len(info) - 1):
                 lineNum = (len(info) - 1)
@@ -505,9 +559,9 @@ def Remove(passwordFile, user):
                cursor="hand2", command=next, border=0).place(x=864, y=251)
         Button(frame, image=ArrowLeftImg, bg="white",
                cursor="hand2", command=prev, border=0).place(x=524, y=251)
-        service = UserOutput('Service Name', frame, 553, 171)
-        username = UserOutput('Username', frame, 553, 230)
-        password = UserOutput('Password', frame, 553, 289)
+        service = UserOutputText('Service Name', frame, 553, 171)
+        username = UserOutputText('Username', frame, 553, 230)
+        password = UserOutputText('Password', frame, 553, 289)
         update()
         Button(frame, text="Remove", bg=PRIMARY, fg='white', border=0, cursor='hand2', font=LARGE_TEXT_FONT,
                command=removeData).place(x=524, y=367, width=160, height=34)
@@ -541,7 +595,7 @@ def View(passwordFile, user):
                 passwordFile, lineNum, 'service'))
             username.updateText(passwords.getData(
                 passwordFile, lineNum, 'username'))
-            password.updateText(passwords.getData(
+            password.updatePasswordText(passwords.getData(
                 passwordFile, lineNum, 'password'))
 
         def next():
@@ -562,9 +616,9 @@ def View(passwordFile, user):
                cursor="hand2", command=next, border=0).place(x=864, y=251)
         Button(frame, image=ArrowLeftImg, bg="white",
                cursor="hand2", command=prev, border=0).place(x=524, y=251)
-        service = UserOutput('Service Name', frame, 553, 171)
-        username = UserOutput('Username', frame, 553, 230)
-        password = UserOutput('Password', frame, 553, 289)
+        service = UserOutputButton('Service Name', frame, 553, 171)
+        username = UserOutputButton('Username', frame, 553, 230)
+        password = UserOutputButton('Password', frame, 553, 289)
         update()
         Button(frame, text="Back", bg=PRIMARY, fg='white', border=0, cursor='hand2',
                font=LARGE_TEXT_FONT, command=lambda: Home(user)).place(x=614, y=367, width=160, height=34)

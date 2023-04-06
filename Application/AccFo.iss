@@ -20,11 +20,11 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
-LicenseFile=C:\Users\vaibh\OneDrive\Documents\GitHub\AccFoReworked\LICENSE.txt
+LicenseFile=C:\Users\vaibh\OneDrive\Documents\GitHub\AccFo\LICENSE.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
-OutputDir=C:\Users\vaibh\OneDrive\Documents\GitHub\AccFoReworked
+OutputDir=C:\Users\vaibh\OneDrive\Documents\GitHub\AccFo\Application
 OutputBaseFilename=AccFo_Setup
 Compression=lzma
 SolidCompression=yes
@@ -37,8 +37,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\vaibh\OneDrive\Documents\GitHub\AccFoReworked\Application\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\vaibh\OneDrive\Documents\GitHub\AccFoReworked\Application\assets\*"; DestDir: "{app}/assets"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\vaibh\OneDrive\Documents\GitHub\AccFo\Application\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\vaibh\OneDrive\Documents\GitHub\AccFo\Application\assets\*"; DestDir: "{app}/assets"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
