@@ -1,214 +1,78 @@
-# importing modules
-import pygame
-import random
-import pyperclip
-from assets.interface.config import *
-from sys import exit
-from os import getcwd, path, mkdir
+# Importing Required Modules
+from tkinter import *
+from os import getcwd, mkdir, path
 from cryptography.fernet import Fernet
+from random import choice, shuffle
 from array import array
-from time import time
+from pyperclip import copy
+from sys import exit
 
+# Initializing Application Window In The Center Of Screen
+window = Tk()
+icon = PhotoImage(file="assets/images/icon.png")
+window.iconphoto(True, icon)
+window.resizable(False, False)
+window.title("AccFo")
+windowWidth = 925
+windowHeight = 500
+screenWidth = window.winfo_screenwidth()
+screenHeight = window.winfo_screenheight()
+x = int((screenWidth/2) - (windowWidth/2))
+y = int((screenHeight/2) - (windowHeight/2))
+window.geometry(f"{windowWidth}x{windowHeight}+{x}+{y}")
+window.configure(bg="white")
 
-# Button class
-class Button():
-    def __init__(self, text, font, pos):
-        self.displaySurface = pygame.display.get_surface()
-        self.font = font
-        self.bgRectColor = BUTTON_COLOR
-        self.pressed = False
-        self.action = False
+# Loading Images
+ArrowLeftImg = PhotoImage(file='assets/images/ArrowLeftImg.png')
+ArrowRightImg = PhotoImage(file='assets/images/ArrowRightImg.png')
+SignUpImg = PhotoImage(file='assets/images/SignUpImg.png')
+SignInImg = PhotoImage(file='assets/images/SignInImg.png')
+HomeImg = PhotoImage(file='assets/images/HomeImg.png')
+HomeTextImg = PhotoImage(file='assets/images/HomeTextImg.png')
+ErrorImg = PhotoImage(file='assets/images/ErrorImg.png')
+AddImg = PhotoImage(file='assets/images/AddImg.png')
+GenerateImg = PhotoImage(file='assets/images/GenerateImg.png')
+RemoveImg = PhotoImage(file='assets/images/RemoveImg.png')
+ViewImg = PhotoImage(file='assets/images/ViewImg.png')
 
-        self.textSurface = self.font.render(text, True, TEXT_COLOR)
-        self.textRect = self.textSurface.get_rect(center=pos)
+# Defigning Variables
+show = 'show'
+hide = 'hide'
+lineNum = 0
+info = []
 
-        self.bgRect = pygame.Rect((0, 0), (0, 0))
-        self.bgRect.height = 50
-        self.bgRect.width = max(250, (self.textSurface.get_width() + 26))
-        self.bgRect.center = self.textRect.center
+# Defigning Fonts
+HEADING_FONT = ('Regular', 22)
+LARGE_TEXT_FONT = ('Regular', 16)
+MEDIUM_TEXT_FONT = ('Regular', 12)
+SMALL_TEXT_FONT = ('Regular', 9)
 
-    def draw(self):
-        pygame.draw.rect(self.displaySurface, self.bgRectColor, self.bgRect)
-        self.displaySurface.blit(self.textSurface, self.textRect)
+# Defigning Colours
+PRIMARY = '#FF4E5A'
+TEXT = '#4E4E4E'
+SECONDARY = '#1C2F37'
 
-        mousePos = pygame.mouse.get_pos()
-        if self.bgRect.collidepoint(mousePos):
-            self.bgRectColor = HOVER_COLOR
-        else:
-            self.bgRectColor = BUTTON_COLOR
+# Defigning Files
+KEY_FILE = "assets/config/key.key"
+USERS_FILE = "assets/config/users.txt"
 
-    def clickCheck(self):
-        self.action = False
-        mousePos = pygame.mouse.get_pos()
-
-        if self.bgRect.collidepoint(mousePos):
-            if pygame.mouse.get_pressed()[0]:
-                self.pressed = True
-            else:
-                if self.pressed == True:
-                    self.action = True
-                    self.pressed = False
-
-        return self.action
-
-
-# InputBox class
-class InputBox():
-    def __init__(self, placeHolder, font, pos):
-        self.displaySurface = pygame.display.get_surface()
-        self.font = font
-        self.placeHolder = placeHolder
-        self.userInput = self.placeHolder
-        self.bgRectColor = BUTTON_COLOR
-        self.pos = pos
-        self.active = False
-
-    def draw(self):
-        self.textSurface = self.font.render(self.userInput, True, TEXT_COLOR)
-        self.textRect = self.textSurface.get_rect(center=self.pos)
-
-        self.bgRect = pygame.Rect((0, 0), (0, 0))
-        self.bgRect.height = 50
-        self.bgRect.width = max(250, (self.textSurface.get_width() + 26))
-        self.bgRect.center = self.textRect.center
-
-        pygame.draw.rect(self.displaySurface, self.bgRectColor, self.bgRect)
-        self.displaySurface.blit(self.textSurface, self.textRect)
-
-        if self.active == True:
-            self.bgRectColor = HOVER_COLOR
-        else:
-            self.bgRectColor = BUTTON_COLOR
-
-    def update(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.bgRect.collidepoint(event.pos):
-                self.active = True
-                if self.userInput == self.placeHolder:
-                    self.userInput = ''
-            else:
-                self.active = False
-                if self.userInput == '':
-                    self.userInput = self.placeHolder
-
-        if self.active == True:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_BACKSPACE:
-                    self.userInput = self.userInput[:-1]
-                else:
-                    self.userInput += event.unicode
-
-    def save(self):
-        return self.userInput
-
-
-# RenderText class
-class RenderText():
-    def __init__(self, text, font, pos):
-        self.displaySurface = pygame.display.get_surface()
-        self.text = text
-        self.font = font
-        self.pos = pos
-
-        self.textSurface = self.font.render(self.text, True, TEXT_COLOR)
-        self.textRect = self.textSurface.get_rect(center=self.pos)
-
-    def draw(self):
-        self.displaySurface.blit(self.textSurface, self.textRect)
-
-
-# RenderTextWithBg class
-class RenderTextWithBg():
-    def __init__(self, font, pos):
-        self.displaySurface = pygame.display.get_surface()
-        self.font = font
-        self.bgRectColor = BUTTON_COLOR
-        self.pos = pos
-        self.pressed = False
-
-    def draw(self, text):
-        self.text = text
-
-        self.textSurface = self.font.render(self.text, True, TEXT_COLOR)
-        self.textRect = self.textSurface.get_rect(center=self.pos)
-
-        self.bgRect = pygame.Rect((0, 0), (0, 0))
-        self.bgRect.height = 50
-        self.bgRect.width = (self.textSurface.get_width() + 26)
-        self.bgRect.center = self.textRect.center
-
-        pygame.draw.rect(self.displaySurface, self.bgRectColor, self.bgRect)
-        self.displaySurface.blit(self.textSurface, self.textRect)
-
-    def clickCheck(self):
-        mousePos = pygame.mouse.get_pos()
-        if self.bgRect.collidepoint(mousePos):
-            if pygame.mouse.get_pressed()[2]:
-                self.pressed = True
-            else:
-                if self.pressed == True:
-                    pyperclip.copy(self.text)
-                    self.pressed = False
-
-
-# PasswordText class
-class PasswordText():
-    def __init__(self, font, pos):
-        self.displaySurface = pygame.display.get_surface()
-        self.font = font
-        self.bgRectColor = BUTTON_COLOR
-        self.pos = pos
-        self.pressed = False
-        self.hovering = False
-
-    def draw(self, text):
-        if self.hovering == True:
-            self.text = text
-        else:
-            self.text = "*" * len(text)
-
-        self.textSurface = self.font.render(self.text, True, TEXT_COLOR)
-        self.textRect = self.textSurface.get_rect(center=self.pos)
-
-        self.bgRect = pygame.Rect((0, 0), (0, 0))
-        self.bgRect.height = 50
-        self.bgRect.width = (self.textSurface.get_width() + 26)
-        self.bgRect.center = self.textRect.center
-
-        pygame.draw.rect(self.displaySurface, self.bgRectColor, self.bgRect)
-        self.displaySurface.blit(self.textSurface, self.textRect)
-
-    def clickCheck(self):
-        mousePos = pygame.mouse.get_pos()
-        if self.bgRect.collidepoint(mousePos):
-            self.hovering = True
-            if pygame.mouse.get_pressed()[2]:
-                self.pressed = True
-            else:
-                if self.pressed == True:
-                    pyperclip.copy(self.text)
-                    self.pressed = False
-        else:
-            self.hovering = False
-
-
-# creating the password file if it doesn't exist
+# Creating Config Folder
 cwd = getcwd()
-dir = path.join(cwd + "/data")
+dir = path.join(cwd + "/assets/config")
 if not path.exists(dir):
     mkdir(dir)
-with open(path.join(dir, "passwords.txt"), 'a') as file:
+with open(path.join(dir, "users.txt"), 'a') as file:
     pass
 
 
-# generating key
+# Function To Generate Key
 def keyGen():
     key = Fernet.generate_key()
     with open(KEY_FILE, "wb") as keyFile:
         keyFile.write(key)
 
 
-# setting the key
+# Function To Set Key
 def setKey():
     if path.isfile(KEY_FILE) == False:
         keyGen()
@@ -217,30 +81,203 @@ def setKey():
     return key
 
 
-# initializing fernet
+# Initializing Fernet
 fernet = Fernet(setKey())
-# time
-prevTime = ''
-# initializing pygame
-pygame.init()
-# loading icon image
-iconImg = pygame.image.load(ICON_IMAGE_PATH)
-# window settings
-app = pygame.display.set_mode(WINDOW_SIZE)
-pygame.display.set_icon(iconImg)
-# limiting FPS
-clock = pygame.time.Clock()
-# font
-font = pygame.font.Font(FONT_FILE_PATH, 24)
-bigFont = pygame.font.Font(FONT_FILE_PATH, 48)
 
 
-# function to generate password of a given length
-def generatePassword(passwordLength):
-    if passwordLength <= 7:
-        passwordLength = 8
-    elif passwordLength >= 26:
-        passwordLength = 25
+# Read And Edit Users
+class Users():
+    def __init__(self):
+        self.file = USERS_FILE
+        self.divider = "|_]-[_|"
+
+    def addUser(self, username, password):
+        with open(self.file, 'a') as file:
+            file.write(username + self.divider +
+                       fernet.encrypt(password.encode()).decode() + '\n')
+
+    def login(self, username, password):
+        data = []
+        with open(USERS_FILE, 'r') as file:
+            data = file.readlines()
+        for lineNum in range(len(data)):
+            line = data[lineNum].rstrip()
+            name, pwd = line.split(self.divider)
+            pwd = (fernet.decrypt(pwd.encode()).decode())
+            if username == name and password == pwd:
+                return True
+        return False
+
+    def userCheck(self, username):
+        data = []
+        with open(USERS_FILE, 'r') as file:
+            data = file.readlines()
+        for lineNum in range(len(data)):
+            line = data[lineNum].rstrip()
+            name, pwd = line.split(self.divider)
+            if username == name:
+                return True
+        return False
+
+
+# Assigning Users
+users = Users()
+
+
+# Text Input Box
+class TextInput():
+    def __init__(self, value, frame, x, y):
+        self.value = value
+        self.place = Entry(frame, width=32, fg=TEXT, border=0,
+                           bg="white", font=MEDIUM_TEXT_FONT)
+        self.place.place(x=x, y=y)
+        self.place.insert(0, self.value)
+        self.place.bind("<FocusIn>", self.onEnter)
+        self.place.bind("<FocusOut>", self.onLeave)
+        Frame(frame, width=295, height=2, bg=SECONDARY).place(x=(x-5), y=(y+25))
+
+    def onEnter(self, e):
+        self.data = self.place.get()
+        if self.data == self.value:
+            self.place.delete(0, "end")
+
+    def onLeave(self, e):
+        self.data = self.place.get()
+        if self.data == "":
+            self.place.insert(0, self.value)
+
+    def get(self):
+        self.data = self.place.get()
+        return (self.data)
+
+
+# Password Input Box
+class PasswordInput():
+    def __init__(self, value, frame, x, y):
+        self.value = value
+        if self.value != "Password":
+            self.place = Entry(frame, width=32, fg=TEXT, border=0,
+                               bg="white", font=MEDIUM_TEXT_FONT, show="-")
+            self.btn = Button(frame, text=show, font=("Bold", 12),
+                              bg="white", fg="black", cursor="hand2", command=self.showHide, border=0)
+        else:
+            self.place = Entry(frame, width=32, fg=TEXT, border=0,
+                               bg="white", font=MEDIUM_TEXT_FONT)
+            self.btn = Button(frame, text=hide, font=("Bold", 12),
+                              bg="white", fg="black", cursor="hand2", command=self.showHide, border=0)
+        self.place.place(x=x, y=y)
+        self.place.insert(0, self.value)
+        self.place.bind("<FocusIn>", self.onEnter)
+        self.place.bind("<FocusOut>", self.onLeave)
+        self.btn.place(x=x+295, y=y)
+        Frame(frame, width=295, height=2, bg=SECONDARY).place(x=(x-5), y=(y+25))
+
+    def showHide(self):
+        if self.place['show'] == '-':
+            self.place.configure(show='')
+            self.btn.configure(text=hide)
+        else:
+            self.place.configure(show='-')
+            self.btn.configure(text=show)
+
+    def onEnter(self, e):
+        self.data = self.place.get()
+        if self.data == self.value:
+            self.place.delete(0, "end")
+
+    def onLeave(self, e):
+        self.data = self.place.get()
+        if self.data == "":
+            self.place.insert(0, self.value)
+        elif self.data == "Password" and self.place[show] == '':
+            self.place.configure(show='')
+            self.btn.configure(text=hide)
+
+    def get(self):
+        self.data = self.place.get()
+        return (self.data)
+
+
+# User Output Box
+class UserOutputButton():
+    def __init__(self, value, frame, x, y):
+        self.value = value
+        self.button = Button(frame, text=self.value, font=MEDIUM_TEXT_FONT, bg="white", fg=TEXT, cursor="hand2",
+                             command=self.copyText, border=0)
+        self.button.place(x=x, y=y, width=281, height=29)
+
+    def copyText(self):
+        copy(self.value)
+        popup("Copied!")
+
+    def updateText(self, value):
+        self.value = value
+        self.button['text'] = self.value
+
+    def updatePasswordText(self, value):
+        self.value = value
+        self.button['text'] = '----'
+
+
+class UserOutputText():
+    def __init__(self, value, frame, x, y):
+        self.value = value
+        self.label = Label(frame, text=self.value,
+                           font=MEDIUM_TEXT_FONT, bg="white", fg=TEXT)
+        self.label.place(x=x, y=y, width=281, height=29)
+
+    def updateText(self, value):
+        self.value = value
+        self.label['text'] = self.value
+
+    def updatePasswordText(self, value):
+        self.value = value
+        self.label['text'] = '----'
+
+
+# Read And Write Passwords
+class Passwords():
+    def __init__(self):
+        self.divider = "[)-|-(]"
+
+    def addData(self, passwordFile, serviceName, username, password):
+        with open(passwordFile, 'a') as file:
+            file.write(serviceName + self.divider + username + self.divider +
+                       fernet.encrypt(password.encode()).decode() + "\n")
+
+    def getData(self, passwordFile, lineNum, value):
+        with open(passwordFile, 'r') as file:
+            data = file.readlines()
+            line = data[lineNum].rstrip()
+            service, username, pwd = line.split(self.divider)
+            password = fernet.decrypt(pwd.encode()).decode()
+        if value == 'service':
+            return service
+        elif value == 'username':
+            return username
+        elif value == 'password':
+            return password
+
+    def removeData(self, passwordFile, lineNum):
+        with open(passwordFile, 'r') as file:
+            data = file.readlines()
+        with open(passwordFile, 'w') as file:
+            for number, line in enumerate(data):
+                if number is not lineNum:
+                    file.write(line)
+
+
+# Assigning Passwords
+passwords = Passwords()
+
+
+# Function to generate a password with given length
+def genPwd(passLen):
+    if passLen <= 7:
+        passLen = 8
+
+    elif passLen >= 26:
+        passLen = 25
 
     digits = ['0', '2', '3', '4', '5', '6', '7', '8', '9']
 
@@ -254,372 +291,346 @@ def generatePassword(passwordLength):
                  'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
                  'Z']
 
-    symbols = ['!', '@', '#', '$', '%', '=', ':', '?', '.', '/', '|', '~', '>',
+    symbols = ['@', '#', '$', '%', '=', ':', '?', '.', '/', '|', '~', '>',
                '*', '(', ')', '<']
 
     combinedList = digits + lowerCase + upperCase + symbols
-    randDigit = random.choice(digits)
-    randLower = random.choice(lowerCase)
-    randUpper = random.choice(upperCase)
-    randSymbol = random.choice(symbols)
+    randDigit = choice(digits)
+    randLower = choice(lowerCase)
+    randUpper = choice(upperCase)
+    randSymbol = choice(symbols)
 
     tempPwd = randDigit + randLower + randUpper + randSymbol
 
-    for x in range(passwordLength - 4):
-        tempPwd = tempPwd + random.choice(combinedList)
+    for x in range(passLen - 4):
+        tempPwd = tempPwd + choice(combinedList)
         tempPwdList = array('u', tempPwd)
-        random.shuffle(tempPwdList)
+        shuffle(tempPwdList)
 
     password = ""
     for x in tempPwdList:
         password = password + x
 
-    return(password)
+    return (password)
 
 
-# error function
-def notification():
-    pygame.display.set_caption("AccFo - Notification")
-    # title
-    title = RenderText("Account Info", font, (250, 23))
-    notificationTitle = RenderText("Error", font, (250, 62))
-    # text
-    notificationMsg = RenderText(
-        "Sorry, you haven't saved anything yet.", font, (250, 250))
-    # button
-    backBtn = Button("Back", font, (250, 450))
-
-    UIElements = [title, notificationTitle, notificationMsg, backBtn]
-
-    while True:
-        app.fill(BACKGROUND_COLOR)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-
-        for element in UIElements:
-            element.draw()
-
-        if backBtn.clickCheck():
-            main()
-
-        pygame.display.update()
-        clock.tick(FPS)
+# Popup window
+def popup(message):
+    popupWin = Toplevel(window)
+    popupWin.resizable(False, False)
+    popupWin.title("AccFo")
+    popupWin.geometry("400x75")
+    popupWin.configure(bg="white")
+    Label(popupWin, text=message, fg=TEXT,
+          bg='white', font=LARGE_TEXT_FONT).pack()
+    Button(popupWin, text="OK", fg='white', bg=PRIMARY, font=LARGE_TEXT_FONT,
+           border=0, cursor="hand2", command=popupWin.destroy).pack()
 
 
-# add function
-def add():
-    pygame.display.set_caption("AccFo - Add")
-    # title
-    title = RenderText("Account Info", font, (250, 23))
-    addTitle = RenderText("Add", font, (250, 62))
-    # buttons
-    saveBtn = Button("Save", font, (250, 373))
-    backBtn = Button("Back", font, (250, 452))
-    # input boxes
-    serviceName = InputBox("Service Name", font, (250, 139))
-    username = InputBox("Username", font, (250, 217))
-    password = InputBox("Password", font, (250, 295))
+# SignUp Frame
+def SignUp():
+    window.title("AccFo - SignUp")
+    frame = Frame(window, width=925, height=500, bg='white').place(x=0, y=0)
+    Label(frame, image=SignUpImg, bg="white").place(x=42, y=124)
+    Label(frame, text="AccFo", bg="white", fg=PRIMARY,
+          font=HEADING_FONT).place(x=655, y=50)
+    Label(frame, text="Sign Up", bg="white", fg=PRIMARY,
+          font=LARGE_TEXT_FONT).place(x=653, y=100)
 
-    UIElements = [title, addTitle, saveBtn,
-                  backBtn, serviceName, username, password]
+    username = TextInput("Username", frame, 553, 180)
+    password = PasswordInput("Password", frame, 553, 262)
 
-    while True:
-        app.fill(BACKGROUND_COLOR)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            serviceName.update(event)
-            username.update(event)
-            password.update(event)
+    def logUser():
+        if users.userCheck(username.get()):
+            popup(f'{username.get()} already exists!')
+        else:
+            users.addUser(username.get(), password.get())
+            popup('Successfully signed up!')
+            SignIn()
 
-        for element in UIElements:
-            element.draw()
+    def validate():
+        with open(USERS_FILE, 'r') as file:
+            config = file.readline().rstrip()
+            if not len(config) > 0:
+                popup("No accounts created!")
+                SignUp()
+            else:
+                SignIn()
 
-        if saveBtn.clickCheck():
-            with open(PASSWORD_FILE, 'a') as file:
-                file.write(serviceName.save() + "\:-:/" + username.save() + "\:-:/" +
-                           fernet.encrypt(password.save().encode()).decode() + "\n")
-            main()
-
-        if backBtn.clickCheck():
-            main()
-
-        pygame.display.update()
-        clock.tick(FPS)
+    Button(frame, text="Sign Up", bg=PRIMARY, fg='white', border=0, cursor='hand2',
+           font=LARGE_TEXT_FONT, command=logUser).place(x=614, y=350, width=160, height=34)
+    Label(frame, text="Already have an account?", bg='white', fg=TEXT,
+          font=SMALL_TEXT_FONT).place(x=576, y=420)
+    Button(frame, text="Sign In", bg='white', fg=PRIMARY, border=0,
+           cursor='hand2', font=SMALL_TEXT_FONT, command=validate).place(x=718, y=420)
 
 
-# generate function
-def generate():
-    pygame.display.set_caption("AccFo - Generate")
-    password = ''
-    # title
-    title = RenderText("Account Info", font, (250, 23))
-    genTitle = RenderText("Generate", font, (250, 62))
-    # button
-    genBtn = Button("Generate", font, (250, 312))
-    saveBtn = Button("Save", font, (250, 379))
-    backBtn = Button("Back", font, (250, 446))
-    # text with BG
-    passwordTxt = RenderTextWithBg(font, (250, 245))
-    # input box
-    serviceName = InputBox("Service Name", font, (250, 111))
-    username = InputBox("Username", font, (250, 178))
-    passwordLen = InputBox("Password Length(8-25)", font, (250, 245))
+# SignIn Frame
+def SignIn():
+    window.title("AccFo - SignIn")
+    frame = Frame(window, width=925, height=500, bg='white').place(x=0, y=0)
+    Label(frame, image=SignInImg, bg="white").place(x=42, y=124)
+    Label(frame, text="AccFo", bg="white", fg=PRIMARY,
+          font=HEADING_FONT).place(x=655, y=50)
+    Label(frame, text="Sign In", bg="white", fg=PRIMARY,
+          font=LARGE_TEXT_FONT).place(x=658, y=100)
 
-    UIElements = [title, genTitle, genBtn,
-                  saveBtn, backBtn, serviceName, username]
+    username = TextInput("Username", frame, 553, 180)
+    password = PasswordInput("Password", frame, 553, 262)
 
-    while True:
-        app.fill(BACKGROUND_COLOR)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            serviceName.update(event)
-            username.update(event)
-            if password == '':
-                passwordLen.update(event)
+    def validate():
+        if users.login(username.get(), password.get()):
+            popup(f'Successfully logged in as {username.get()}!')
+            Home(username.get())
+        else:
+            popup('Invalid username or password!')
 
-        if password == '':
-            passwordLen.draw()
-
-        for element in UIElements:
-            element.draw()
-
-        if genBtn.clickCheck():
-            passwordLength = passwordLen.save()
-            if not isinstance(passwordLength, int):
-                try:
-                    passwordLength = int(passwordLength)
-                except:
-                    passwordLength = 8
-            password = generatePassword(passwordLength)
-
-        if saveBtn.clickCheck():
-            try:
-                with open(PASSWORD_FILE, 'a') as file:
-                    file.write(serviceName.save() + "\:-:/" + username.save() + "\:-:/" +
-                               fernet.encrypt((passwordTxt.text).encode()).decode() + "\n")
-                main()
-            except:
-                pass
-        if backBtn.clickCheck():
-            main()
-
-        if not password == '':
-            passwordTxt.draw(password)
-
-        pygame.display.update()
-        clock.tick(FPS)
+    Button(frame, text="Sign In", bg=PRIMARY, fg='white', border=0, cursor='hand2',
+           font=LARGE_TEXT_FONT, command=validate).place(x=614, y=350, width=160, height=34)
+    Label(frame, text="Don't have an account?", bg='white', fg=TEXT,
+          font=SMALL_TEXT_FONT).place(x=581, y=420)
+    Button(frame, text="Sign Up", bg='white', fg=PRIMARY, border=0,
+           cursor='hand2', font=SMALL_TEXT_FONT, command=SignUp).place(x=710, y=420)
 
 
-# remove function
-def remove():
-    pygame.display.set_caption("AccFo - Remove")
-    data = []
-    with open(PASSWORD_FILE, 'r') as file:
-        data = file.readlines()
-    lineNum = 1
-    # title
-    title = RenderText("Account Info", font, (250, 23))
-    rmvTitle = RenderText("Remove", font, (250, 62))
-    # button
-    upBtn = Button("Up", font, (250, 86+25))
-    downBtn = Button("Down", font, (250, 347))
-    rmvBtn = Button("Remove", font, (250, 406))
-    backBtn = Button("Back", font, (250, 465))
-    # text
-    serviceTxt = RenderTextWithBg(font, (250, 170))
-    usernameTxt = RenderTextWithBg(font, (250, 229))
-    passwordTxt = PasswordText(font, (250, 288))
+# Home Frame
+def Home(username):
+    cwd = getcwd()
+    dir = path.join(cwd + "/assets/data")
+    if not path.exists(dir):
+        mkdir(dir)
+    with open(path.join(dir, f"{username}.txt"), 'a') as file:
+        pass
 
-    UIElements = [title, rmvTitle, upBtn, downBtn, rmvBtn, backBtn]
+    passwordFile = f"assets/data/{username}.txt"
 
-    while True:
-        app.fill(BACKGROUND_COLOR)
+    window.title("AccFo")
+    frame = Frame(window, width=925, height=500, bg='white').place(x=0, y=0)
+    Label(frame, image=HomeImg, bg="white").place(x=42, y=124)
+    Label(frame, image=HomeTextImg, bg="white").place(x=348, y=444)
+    Label(frame, text="AccFo", bg="white", fg=PRIMARY,
+          font=HEADING_FONT).place(x=655, y=50)
+    Label(frame, text="Home", bg="white", fg=PRIMARY,
+          font=LARGE_TEXT_FONT).place(x=663, y=100)
 
-        if lineNum <= 0:
-            lineNum = 1
-        elif lineNum > len(data):
-            lineNum = len(data)
-
-        line = data[lineNum - 1].rstrip()
-
-        service, username, passw = line.split("\:-:/")
-        password = (fernet.decrypt(passw.encode()).decode())
-
-        serviceTxt.draw(service)
-        usernameTxt.draw(username)
-        passwordTxt.draw(password)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-
-        for element in UIElements:
-            element.draw()
-
-        if upBtn.clickCheck():
-            lineNum -= 1
-        if downBtn.clickCheck():
-            lineNum += 1
-        if rmvBtn.clickCheck():
-            with open(PASSWORD_FILE, 'w') as file:
-                for number, line in enumerate(data):
-                    if number not in [lineNum - 1]:
-                        file.write(line)
-            main()
-        if backBtn.clickCheck():
-            main()
-
-        pygame.display.update()
-        clock.tick(FPS)
+    Button(frame, text="Add", bg=PRIMARY, fg='white', border=0,
+           cursor='hand2', font=LARGE_TEXT_FONT, command=lambda: Add(passwordFile, username)).place(x=614, y=168, width=160, height=34)
+    Button(frame, text="Generate", bg=PRIMARY, fg='white', border=0,
+           cursor='hand2', font=LARGE_TEXT_FONT, command=lambda: Generate(passwordFile, username)).place(x=614, y=215, width=160, height=34)
+    Button(frame, text="Remove", bg=PRIMARY, fg='white', border=0,
+           cursor='hand2', font=LARGE_TEXT_FONT, command=lambda: Remove(passwordFile, username)).place(x=614, y=262, width=160, height=34)
+    Button(frame, text="View", bg=PRIMARY, fg='white', border=0,
+           cursor='hand2', font=LARGE_TEXT_FONT, command=lambda: View(passwordFile, username)).place(x=614, y=309, width=160, height=34)
+    Button(frame, text="Quit", bg=PRIMARY, fg='white', border=0,
+           cursor='hand2', font=LARGE_TEXT_FONT, command=exit).place(x=614, y=356, width=160, height=34)
 
 
-# view function
-def view():
-    pygame.display.set_caption("AccFo - View")
-    data = []
-    with open(PASSWORD_FILE, 'r') as file:
-        data = file.readlines()
-    lineNum = 1
-    # title
-    title = RenderText("Account Info", font, (250, 23))
-    viewTitle = RenderText("View", font, (250, 62))
-    # button
-    upBtn = Button("Up", font, (250, 111))
-    downBtn = Button("Down", font, (250, 379))
-    backBtn = Button("Back", font, (250, 446))
-    # text
-    serviceTxt = RenderTextWithBg(font, (250, 178))
-    usernameTxt = RenderTextWithBg(font, (250, 245))
-    passwordTxt = PasswordText(font, (250, 312))
+# Error Frame
+def Error(username):
+    window.title("AccFo - Error")
+    frame = Frame(window, width=925, height=500, bg='white').place(x=0, y=0)
+    Label(frame, image=ErrorImg, bg="white").place(x=42, y=124)
+    Label(frame, text="AccFo", bg="white", fg=PRIMARY,
+          font=HEADING_FONT).place(x=655, y=50)
+    Label(frame, text="Error", bg="white", fg=PRIMARY,
+          font=LARGE_TEXT_FONT).place(x=668, y=100)
 
-    UIElements = [title, viewTitle, upBtn, downBtn, backBtn]
-
-    while True:
-        app.fill(BACKGROUND_COLOR)
-        if lineNum <= 0:
-            lineNum = 1
-        if lineNum > len(data):
-            lineNum = len(data)
-
-        line = (data[lineNum - 1].rstrip())
-
-        service, username, passw = line.split("\:-:/")
-        password = (fernet.decrypt(passw.encode()).decode())
-
-        serviceTxt.draw(service)
-        usernameTxt.draw(username)
-        passwordTxt.draw(password)
-
-        serviceTxt.clickCheck()
-        usernameTxt.clickCheck()
-        passwordTxt.clickCheck()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-
-        for element in UIElements:
-            element.draw()
-
-        if upBtn.clickCheck():
-            lineNum -= 1
-        if downBtn.clickCheck():
-            lineNum += 1
-        if backBtn.clickCheck():
-            main()
-
-        pygame.display.update()
-        clock.tick(FPS)
+    Label(frame, text="You have not saved anything yet!",
+          bg='white', fg=TEXT, font=LARGE_TEXT_FONT).place(x=535, y=202)
+    Button(frame, text="Back", bg=PRIMARY, fg='white', border=0, cursor='hand2',
+           font=LARGE_TEXT_FONT, command=lambda: Home(username)).place(x=614, y=367, width=160, height=34)
 
 
-# main function
-def main():
-    pygame.display.set_caption("AccFo")
+# Add Frame
+def Add(passwordFile, user):
+    window.title("AccFo - Add")
+    frame = Frame(window, width=925, height=500, bg='white').place(x=0, y=0)
+    Label(frame, image=AddImg, bg="white").place(x=42, y=124)
+    Label(frame, text="AccFo", bg="white", fg=PRIMARY,
+          font=HEADING_FONT).place(x=655, y=50)
+    Label(frame, text="Add", bg="white", fg=PRIMARY,
+          font=LARGE_TEXT_FONT).place(x=668, y=100)
 
+    service = TextInput("Service Name", frame, 553, 171)
+    username = TextInput("Username", frame, 553, 230)
+    password = TextInput("Password", frame, 553, 289)
+
+    def addData():
+        passwords.addData(passwordFile, service.get(),
+                          username.get(), password.get())
+        popup('Successfully saved informaton!')
+        Add(passwordFile, user)
+
+    Button(frame, text="Save", bg=PRIMARY, fg='white', border=0, cursor='hand2',
+           font=LARGE_TEXT_FONT, command=addData).place(x=524, y=367, width=160, height=34)
+    Button(frame, text="Back", bg=PRIMARY, fg='white', border=0, cursor='hand2',
+           font=LARGE_TEXT_FONT, command=lambda: Home(user)).place(x=704, y=367, width=160, height=34)
+
+
+# Generate Frame
+def Generate(passwordFile, user):
+    window.title("AccFo - Generate")
+    frame = Frame(window, width=925, height=500, bg='white').place(x=0, y=0)
+    Label(frame, image=GenerateImg, bg="white").place(x=42, y=124)
+    Label(frame, text="AccFo", bg="white", fg=PRIMARY,
+          font=HEADING_FONT).place(x=655, y=50)
+    Label(frame, text="Generate", bg="white", fg=PRIMARY,
+          font=LARGE_TEXT_FONT).place(x=646, y=100)
+
+    service = TextInput("Service Name", frame, 553, 151)
+    username = TextInput("Username", frame, 553, 203)
+    passwordLength = TextInput("Password Length (8 - 25)", frame, 553, 255)
+    password = TextInput("Password", frame, 553, 307)
+
+    def place():
+        password.place.delete(0, "end")
+        password.place.insert(0, genPwd(int(passwordLength.get())))
+
+    def addData():
+        passwords.addData(passwordFile, service.get(),
+                          username.get(), password.get())
+        popup('Successfully saved informaton!')
+        Generate(passwordFile, user)
+
+    Button(frame, text="Save", bg=PRIMARY, fg='white', border=0, cursor='hand2',
+           font=LARGE_TEXT_FONT, command=addData).place(x=524, y=367, width=160, height=34)
+    Button(frame, text="Back", bg=PRIMARY, fg='white', border=0, cursor='hand2',
+           font=LARGE_TEXT_FONT, command=lambda: Home(user)).place(x=704, y=367, width=160, height=34)
+    Button(frame, text="Generate", bg=PRIMARY, fg='white', border=0, cursor='hand2',
+           font=LARGE_TEXT_FONT, command=place).place(x=615, y=411, width=160, height=34)
+
+
+# Remove Frame
+def Remove(passwordFile, user):
+    global lineNum, info
+    lineNum = 0
     info = []
-    with open(PASSWORD_FILE, 'r') as file:
+    with open(passwordFile, 'r') as file:
         info = file.readlines()
 
-    title = RenderText("Account Info - AccFo", font, (250, 53))
-    addBtn = Button("Add", font, (250, 130))
-    generateBtn = Button("Generate", font, (250, 210))
-    removeBtn = Button("Remove", font, (250, 290))
-    viewBtn = Button("View", font, (250, 370))
-    quitBtn = Button("Quit", font, (250, 450))
+    if len(info) <= 0:
+        Error(user)
+    else:
+        window.title("AccFo - Remove")
+        frame = Frame(window, width=925, height=500,
+                      bg='white').place(x=0, y=0)
+        Label(frame, image=RemoveImg, bg="white").place(x=42, y=124)
+        Label(frame, text="AccFo", bg="white", fg=PRIMARY,
+              font=HEADING_FONT).place(x=655, y=50)
+        Label(frame, text="Remove", bg="white", fg=PRIMARY,
+              font=LARGE_TEXT_FONT).place(x=651, y=100)
 
-    UIElements = [title, addBtn, generateBtn, removeBtn, viewBtn, quitBtn]
+        def update():
+            global info, lineNum
+            info = []
+            with open(passwordFile, 'r') as file:
+                info = file.readlines()
+            service.updateText(passwords.getData(
+                passwordFile, lineNum, 'service'))
+            username.updateText(passwords.getData(
+                passwordFile, lineNum, 'username'))
+            password.updatePasswordText(passwords.getData(
+                passwordFile, lineNum, 'password'))
+            if lineNum > (len(info) - 1):
+                lineNum = (len(info) - 1)
+            elif lineNum < 0:
+                lineNum = 0
 
-    while True:
-        app.fill(BACKGROUND_COLOR)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
+        def next():
+            global lineNum
+            lineNum += 1
+            if lineNum > (len(info) - 1):
+                lineNum = (len(info) - 1)
+            update()
 
-        for element in UIElements:
-            element.draw()
+        def prev():
+            global lineNum
+            lineNum -= 1
+            if lineNum < 0:
+                lineNum = 0
+            update()
 
-        if addBtn.clickCheck():
-            add()
-        if generateBtn.clickCheck():
-            generate()
-        if removeBtn.clickCheck():
-            if len(info) <= 0:
-                notification()
-            else:
-                remove()
-        if viewBtn.clickCheck():
-            if len(info) <= 0:
-                notification()
-            else:
-                view()
-        if quitBtn.clickCheck():
-            pygame.quit()
-            exit()
+        def removeData():
+            passwords.removeData(passwordFile, lineNum)
+            popup('Successfully removed information!')
+            Remove(passwordFile, user)
 
-        pygame.display.update()
-        clock.tick(FPS)
-
-
-def landingPage():
-    global prevTime
-
-    pygame.display.set_caption("AccFo by ImMortaLGuruji")
-    # title
-    title = RenderText("Account Info", bigFont, (250, 200))
-    Msg = RenderText("By ImMortaLGuruji", font, (250, 250))
-
-    UIElements = [title, Msg]
-
-    while True:
-        app.fill(BACKGROUND_COLOR)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-
-        if prevTime == '':
-            prevTime = time()
-
-        nowTime = time()
-
-        for element in UIElements:
-            element.draw()
-
-        if nowTime - prevTime >= 2:
-            main()
-
-        pygame.display.update()
-        clock.tick(FPS)
+        Button(frame, image=ArrowRightImg, bg="white",
+               cursor="hand2", command=next, border=0).place(x=864, y=251)
+        Button(frame, image=ArrowLeftImg, bg="white",
+               cursor="hand2", command=prev, border=0).place(x=524, y=251)
+        service = UserOutputText('Service Name', frame, 553, 171)
+        username = UserOutputText('Username', frame, 553, 230)
+        password = UserOutputText('Password', frame, 553, 289)
+        update()
+        Button(frame, text="Remove", bg=PRIMARY, fg='white', border=0, cursor='hand2', font=LARGE_TEXT_FONT,
+               command=removeData).place(x=524, y=367, width=160, height=34)
+        Button(frame, text="Back", bg=PRIMARY, fg='white', border=0, cursor='hand2',
+               font=LARGE_TEXT_FONT, command=lambda: Home(user)).place(x=704, y=367, width=160, height=34)
 
 
-# running landingPage
-landingPage()
+# View Frame
+def View(passwordFile, user):
+    global lineNum
+    lineNum = 0
+    info = []
+    with open(passwordFile, 'r') as file:
+        info = file.readlines()
+
+    if len(info) <= 0:
+        Error(user)
+    else:
+        lineNum = 0
+        window.title("AccFo - View")
+        frame = Frame(window, width=925, height=500,
+                      bg='white').place(x=0, y=0)
+        Label(frame, image=ViewImg, bg="white").place(x=42, y=124)
+        Label(frame, text="AccFo", bg="white", fg=PRIMARY,
+              font=HEADING_FONT).place(x=655, y=50)
+        Label(frame, text="View", bg="white", fg=PRIMARY,
+              font=LARGE_TEXT_FONT).place(x=668, y=100)
+
+        def update():
+            service.updateText(passwords.getData(
+                passwordFile, lineNum, 'service'))
+            username.updateText(passwords.getData(
+                passwordFile, lineNum, 'username'))
+            password.updatePasswordText(passwords.getData(
+                passwordFile, lineNum, 'password'))
+
+        def next():
+            global lineNum
+            lineNum += 1
+            if lineNum > (len(info) - 1):
+                lineNum = (len(info) - 1)
+            update()
+
+        def prev():
+            global lineNum
+            lineNum -= 1
+            if lineNum < 0:
+                lineNum = 0
+            update()
+
+        Button(frame, image=ArrowRightImg, bg="white",
+               cursor="hand2", command=next, border=0).place(x=864, y=251)
+        Button(frame, image=ArrowLeftImg, bg="white",
+               cursor="hand2", command=prev, border=0).place(x=524, y=251)
+        service = UserOutputButton('Service Name', frame, 553, 171)
+        username = UserOutputButton('Username', frame, 553, 230)
+        password = UserOutputButton('Password', frame, 553, 289)
+        update()
+        Button(frame, text="Back", bg=PRIMARY, fg='white', border=0, cursor='hand2',
+               font=LARGE_TEXT_FONT, command=lambda: Home(user)).place(x=614, y=367, width=160, height=34)
+
+
+# Checking User Data
+with open(USERS_FILE, 'r') as file:
+    config = file.readline().rstrip()
+if not len(config) > 0:
+    SignUp()
+else:
+    SignIn()
+
+# Executing Mainloop
+window.mainloop()
