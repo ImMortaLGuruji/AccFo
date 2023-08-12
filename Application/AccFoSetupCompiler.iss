@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "AccFo"
-#define MyAppVersion "1.0"
+#define MyAppVersion "2.5"
 #define MyAppPublisher "ImMortaLGuruji"
 #define MyAppURL "https://immortalguruji.itch.io/accfo"
 #define MyAppExeName "AccFo.exe"
@@ -10,7 +10,7 @@
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{5E4FA741-DA78-4195-8F38-8F8E8704915F}
+AppId={{7E0518AB-4986-4263-90B5-89AAB7E9A1BB}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
@@ -25,7 +25,8 @@ LicenseFile=C:\Users\vaibh\OneDrive\Documents\GitHub\AccFo\LICENSE.txt
 ;PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
 OutputDir=C:\Users\vaibh\OneDrive\Documents\GitHub\AccFo\Application
-OutputBaseFilename=AccFo_Setup
+OutputBaseFilename=AccFo_Setup_V2.5
+SetupIconFile=C:\Users\vaibh\OneDrive\Documents\GitHub\AccFo\Application\assets\images\icon.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
