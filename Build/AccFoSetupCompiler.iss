@@ -10,7 +10,7 @@
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{7E0518AB-4986-4263-90B5-89AAB7E9A1BB}
+AppId={{835022F9-A78F-4A6B-A05A-E11F7C2CE3C8}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
@@ -24,9 +24,9 @@ LicenseFile=C:\Users\vaibh\OneDrive\Documents\GitHub\AccFo\LICENSE.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
-OutputDir=C:\Users\vaibh\OneDrive\Documents\GitHub\AccFo\Application
+OutputDir=C:\Users\vaibh\OneDrive\Documents\GitHub\AccFo\Build
 OutputBaseFilename=AccFo_Setup_V2.5
-SetupIconFile=C:\Users\vaibh\OneDrive\Documents\GitHub\AccFo\Application\assets\images\icon.ico
+SetupIconFile=C:\Users\vaibh\OneDrive\Documents\GitHub\AccFo\assets\images\icon.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -38,8 +38,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\vaibh\OneDrive\Documents\GitHub\AccFo\Application\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\vaibh\OneDrive\Documents\GitHub\AccFo\Application\assets\*"; DestDir: "{app}/assets"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\vaibh\OneDrive\Documents\GitHub\AccFo\Build\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\vaibh\OneDrive\Documents\GitHub\AccFo\Build\assets\*"; DestDir: "{app}/assets"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

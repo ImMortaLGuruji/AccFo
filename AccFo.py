@@ -182,7 +182,7 @@ def popup(message: str):
     popupWin = Toplevel(window)
     popupWin.resizable(False, False)
     popupWin.title("AccFo")
-    windowWidth = 400
+    windowWidth = 500
     windowHeight = 75
     screenWidth = 925
     screenHeight = 500
@@ -643,4 +643,7 @@ else:
 
 # Executing Mainloop
 window.mainloop()
-database.connection.close()
+try:
+    database.connection.close()
+except:
+    pass
