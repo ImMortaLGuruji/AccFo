@@ -1,5 +1,4 @@
-# AccFo
-## Your Ultimate Account Manager
+# AccFo: Your Ultimate Account Manager
 
 Safeguard your sensitive data with AccFo, the all-in-one solution for secure and hassle-free account information storage and management. With its advanced features and top-notch encryption, AccFo ensures your peace of mind while managing your accounts.
 
