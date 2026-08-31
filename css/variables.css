@@ -1,0 +1,85 @@
+/* AccFo Design Tokens - Night & Imperial Red Palette */
+:root {
+  /* Color Scheme */
+  color-scheme: dark;
+
+  /* Primary Brand Colors */
+  --color-night: #000f08;
+  --color-imperial-red: #fb3640;
+  --color-imperial-red-hover: #ff4d57;
+  --color-imperial-red-active: #e0232e;
+  --color-imperial-red-muted: rgba(251, 54, 64, 0.12);
+  --color-imperial-red-border: rgba(251, 54, 64, 0.25);
+  --color-imperial-red-glow: rgba(251, 54, 64, 0.35);
+
+  /* Surface & Background Hierarchy */
+  --bg-app: #000f08;
+  --bg-surface: #04120b;
+  --bg-card: rgba(8, 24, 17, 0.75);
+  --bg-card-hover: rgba(12, 34, 24, 0.85);
+  --bg-elevated: #0c2419;
+  --bg-input: #020a05;
+  --bg-input-focus: #04140b;
+  --bg-modal-backdrop: rgba(0, 15, 8, 0.85);
+  --bg-glass: rgba(10, 28, 20, 0.65);
+
+  /* Accent & Status Colors */
+  --color-emerald: #10b981;
+  --color-emerald-bg: rgba(16, 185, 129, 0.12);
+  --color-emerald-border: rgba(16, 185, 129, 0.25);
+
+  --color-amber: #f59e0b;
+  --color-amber-bg: rgba(245, 158, 11, 0.12);
+  --color-amber-border: rgba(245, 158, 11, 0.25);
+
+  --color-cyan: #06b6d4;
+  --color-cyan-bg: rgba(6, 182, 212, 0.12);
+  --color-cyan-border: rgba(6, 182, 212, 0.25);
+
+  --color-purple: #a855f7;
+  --color-purple-bg: rgba(168, 85, 247, 0.12);
+
+  /* Typography & Text */
+  --text-main: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-dim: #334155;
+  --text-danger: #fb3640;
+
+  /* Font Families */
+  --font-sans:
+    "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  /* Borders & Radii */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-card: rgba(251, 54, 64, 0.15);
+  --border-card-hover: rgba(251, 54, 64, 0.4);
+  --border-input: rgba(255, 255, 255, 0.12);
+  --border-input-focus: #fb3640;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows & Glows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.7);
+  --shadow-red-glow: 0 0 25px rgba(251, 54, 64, 0.3);
+  --shadow-red-glow-lg: 0 0 45px rgba(251, 54, 64, 0.45);
+  --shadow-emerald-glow: 0 0 20px rgba(16, 185, 129, 0.3);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 350ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Layout Spacing & Sizes */
+  --header-height: 72px;
+  --sidebar-width: 260px;
+  --max-content-width: 1400px;
+  --backdrop-blur: blur(16px);
+}

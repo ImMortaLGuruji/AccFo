@@ -1,0 +1,2133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#000F08" />
+    <meta
+      name="description"
+      content="AccFo is an open-source, zero-knowledge credential vault with direct local file linking and self-hostable synchronization."
+    />
+    <meta name="author" content="Vaibhav K Joshi (ImMortaLGuruji)" />
+    <meta name="referrer" content="no-referrer" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <title>AccFo — Zero-Knowledge Credential Vault</title>
+    <link rel="icon" type="image/png" href="Logo/white.png" />
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <!-- ========================================================================
+       AUTH SCREEN (Sign In / Sign Up / Restore Vault)
+       ======================================================================== -->
+    <main id="auth-screen" class="auth-container">
+      <div class="auth-card">
+        <!-- Left Visual Banner -->
+        <div class="auth-banner">
+          <div>
+            <div class="auth-brand">
+              <img
+                src="Logo/white.png"
+                alt="AccFo Logo"
+                class="auth-brand-logo"
+              />
+              <div>
+                <h1 class="auth-brand-title text-gradient-red">AccFo</h1>
+                <span class="badge badge-red">Zero-Knowledge Architecture</span>
+              </div>
+            </div>
+
+            <div class="auth-features-list">
+              <div class="auth-feature-item">
+                <div class="auth-feature-icon">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="auth-feature-text">
+                  <h4>AES-256-GCM Encryption</h4>
+                  <p>
+                    Client-side authenticated encryption derived with 600,000
+                    PBKDF2 iterations.
+                  </p>
+                </div>
+              </div>
+
+              <div class="auth-feature-item">
+                <div class="auth-feature-icon">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <line x1="22" y1="12" x2="2" y2="12"></line>
+                    <path
+                      d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"
+                    ></path>
+                    <line x1="6" y1="16" x2="6.01" y2="16"></line>
+                    <line x1="10" y1="16" x2="10.01" y2="16"></line>
+                  </svg>
+                </div>
+                <div class="auth-feature-text">
+                  <h4>Local File Ownership</h4>
+                  <p>
+                    Link a physical .accfo vault file directly to your disk with
+                    File System Access API.
+                  </p>
+                </div>
+              </div>
+
+              <div class="auth-feature-item">
+                <div class="auth-feature-icon">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect
+                      x="2"
+                      y="2"
+                      width="20"
+                      height="8"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <rect
+                      x="2"
+                      y="14"
+                      width="20"
+                      height="8"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                    <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                  </svg>
+                </div>
+                <div class="auth-feature-text">
+                  <h4>Self-Hostable Sync</h4>
+                  <p>
+                    Sync across devices via WebDAV, Nextcloud, S3, or your own
+                    self-hosted server.
+                  </p>
+                </div>
+              </div>
+
+              <div class="auth-feature-item">
+                <div class="auth-feature-icon">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M21 2l-2 2m-1.5 1.5L16 7l-1.5-1.5L13 7l-2-2 1.5-1.5L11 2"
+                    ></path>
+                    <circle cx="7.5" cy="15.5" r="4.5"></circle>
+                  </svg>
+                </div>
+                <div class="auth-feature-text">
+                  <h4>CSPRNG Generator</h4>
+                  <p>
+                    Generate high-entropy passwords and passphrases with
+                    real-time strength analysis.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="auth-banner-footer">
+            <span
+              >AccFo Vault • Created by <strong>Vaibhav K Joshi</strong> (<a
+                href="https://github.com/ImMortaLGuruji"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="color: var(--color-imperial-red)"
+                >ImMortaLGuruji</a
+              >)</span
+            >
+          </div>
+        </div>
+
+        <!-- Right Form Pane -->
+        <div class="auth-form-pane">
+          <!-- Auth Tabs -->
+          <nav class="auth-nav-tabs" aria-label="Authentication Options">
+            <button type="button" class="auth-nav-tab active" data-tab="signin">
+              Sign In
+            </button>
+            <button type="button" class="auth-nav-tab" data-tab="signup">
+              Create Vault
+            </button>
+            <button type="button" class="auth-nav-tab" data-tab="restore">
+              Restore
+            </button>
+          </nav>
+
+          <!-- Sign In Tab -->
+          <div id="auth-tab-signin">
+            <h2 class="auth-form-title">Unlock Vault</h2>
+            <p class="auth-form-subtitle">
+              Enter your master password to decrypt your local records.
+            </p>
+
+            <form id="form-signin">
+              <div class="form-group">
+                <label for="signin-password" class="form-label"
+                  >Master Password</label
+                >
+                <div class="input-wrapper">
+                  <span class="input-icon">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect
+                        x="3"
+                        y="11"
+                        width="18"
+                        height="11"
+                        rx="2"
+                        ry="2"
+                      ></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                  </span>
+                  <input
+                    type="password"
+                    id="signin-password"
+                    class="form-input font-mono"
+                    placeholder="Enter master password"
+                    required
+                    autofocus
+                    autocomplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    class="input-action-btn"
+                    id="btn-toggle-signin-pwd"
+                    title="Toggle password visibility"
+                  >
+                    <svg
+                      class="eye-show"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                      ></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-primary btn-lg"
+                style="width: 100%; margin-top: 1.25rem"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect
+                    x="3"
+                    y="11"
+                    width="18"
+                    height="11"
+                    rx="2"
+                    ry="2"
+                  ></rect>
+                  <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+                </svg>
+                <span>Unlock Vault</span>
+              </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 1.5rem">
+              <a
+                href="#"
+                onclick="
+                  window.accfoApp.showAuthMode('restore');
+                  return false;
+                "
+                class="text-secondary"
+                style="font-size: 0.85rem"
+                >Import an existing vault or backup file</a
+              >
+            </div>
+          </div>
+
+          <!-- Sign Up Tab (Create Vault) -->
+          <div id="auth-tab-signup" style="display: none">
+            <h2 class="auth-form-title">Create Master Vault</h2>
+            <p class="auth-form-subtitle">
+              Initialize your personal zero-knowledge encrypted storage.
+            </p>
+
+            <form id="form-signup">
+              <div class="form-group">
+                <label for="signup-username" class="form-label"
+                  >Vault Name / Identifier</label
+                >
+                <div class="input-wrapper">
+                  <span class="input-icon">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
+                      ></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </span>
+                  <input
+                    type="text"
+                    id="signup-username"
+                    class="form-input"
+                    placeholder="e.g. Personal Vault"
+                    required
+                    autocomplete="username"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="signup-password" class="form-label"
+                  >Master Password</label
+                >
+                <div class="input-wrapper">
+                  <span class="input-icon">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect
+                        x="3"
+                        y="11"
+                        width="18"
+                        height="11"
+                        rx="2"
+                        ry="2"
+                      ></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                  </span>
+                  <input
+                    type="password"
+                    id="signup-password"
+                    class="form-input font-mono"
+                    placeholder="Minimum 8 characters"
+                    required
+                    autocomplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    class="input-action-btn"
+                    id="btn-toggle-signup-pwd"
+                    title="Toggle password visibility"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                      ></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                </div>
+                <div class="strength-meter">
+                  <div class="strength-bar-track">
+                    <div
+                      id="signup-strength-bar"
+                      class="strength-bar-fill"
+                    ></div>
+                  </div>
+                  <div class="strength-label">
+                    <span id="signup-strength-label"
+                      >Enter a master password</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="signup-confirm-password" class="form-label"
+                  >Confirm Master Password</label
+                >
+                <div class="input-wrapper">
+                  <span class="input-icon">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect
+                        x="3"
+                        y="11"
+                        width="18"
+                        height="11"
+                        rx="2"
+                        ry="2"
+                      ></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                  </span>
+                  <input
+                    type="password"
+                    id="signup-confirm-password"
+                    class="form-input font-mono"
+                    placeholder="Re-enter master password"
+                    required
+                    autocomplete="new-password"
+                  />
+                </div>
+              </div>
+
+              <div class="callout-info">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span
+                  >Master keys are generated entirely in browser memory. If you
+                  lose your master password, your encrypted data cannot be
+                  recovered.</span
+                >
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-primary btn-lg"
+                style="width: 100%"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Create Master Vault</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Restore Tab -->
+          <div id="auth-tab-restore" style="display: none">
+            <h2 class="auth-form-title">Restore Vault</h2>
+            <p class="auth-form-subtitle">
+              Import an existing .accfo vault, CSV, or JSON backup file.
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem">
+              <div
+                class="dropzone-box"
+                onclick="
+                  document.getElementById('auth-restore-file-input').click()
+                "
+              >
+                <div class="dropzone-icon">
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                </div>
+                <p class="dropzone-title">Select or drop your backup file</p>
+                <span class="dropzone-subtitle"
+                  >Supports .accfo, .json, and .csv formats</span
+                >
+                <input
+                  type="file"
+                  id="auth-restore-file-input"
+                  accept=".accfo,.json,.csv"
+                  style="display: none"
+                />
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="
+                  if (AccFoFS.isSupported()) {
+                    window.accfoApp.linkExistingFile();
+                  } else {
+                    AccFoUI.showToast('Please select a file above', 'info');
+                  }
+                "
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="22" y1="12" x2="2" y2="12"></line>
+                  <path
+                    d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"
+                  ></path>
+                  <line x1="6" y1="16" x2="6.01" y2="16"></line>
+                  <line x1="10" y1="16" x2="10.01" y2="16"></line>
+                </svg>
+                <span>Link Local .accfo File</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ========================================================================
+       MAIN APP DASHBOARD (Unlocked)
+       ======================================================================== -->
+    <div id="app-screen" class="app-layout" style="display: none">
+      <!-- Top Navigation Bar -->
+      <header class="navbar">
+        <div class="nav-brand">
+          <img src="Logo/accent.png" alt="AccFo Logo" class="nav-logo" />
+          <div class="nav-title-group">
+            <span class="nav-title text-gradient-red">AccFo</span>
+            <span class="nav-version">E2EE • AES-256-GCM</span>
+          </div>
+        </div>
+
+        <!-- Sync Status Badge in Navbar -->
+        <div class="nav-center-status">
+          <div
+            id="nav-sync-status-pill"
+            class="sync-status-pill"
+            onclick="AccFoUI.switchView('settings')"
+            title="Storage and synchronization status"
+          >
+            <span id="nav-sync-dot" class="status-dot"></span>
+            <span id="nav-sync-label">Local Storage</span>
+          </div>
+        </div>
+
+        <div class="nav-actions">
+          <button class="btn btn-primary btn-sm" data-action="add-account">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>New Item</span>
+          </button>
+          <div class="auto-lock-countdown" title="Active vault user">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span id="nav-user-label">Vault</span>
+          </div>
+          <button
+            class="btn btn-danger-outline btn-sm"
+            data-action="lock-vault"
+            title="Lock vault"
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <span>Lock</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Workspace Container -->
+      <div class="app-container">
+        <!-- Desktop Sidebar -->
+        <aside class="app-sidebar">
+          <ul class="sidebar-nav-list">
+            <li class="sidebar-nav-item active" data-view="vault">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M21 2l-2 2m-1.5 1.5L16 7l-1.5-1.5L13 7l-2-2 1.5-1.5L11 2"
+                ></path>
+                <circle cx="7.5" cy="15.5" r="4.5"></circle>
+              </svg>
+              <span>All Items</span>
+              <span id="sidebar-vault-count" class="sidebar-badge">0</span>
+            </li>
+            <li class="sidebar-nav-item" data-view="generator">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="4" y1="21" x2="4" y2="14"></line>
+                <line x1="4" y1="10" x2="4" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12" y2="3"></line>
+                <line x1="20" y1="21" x2="20" y2="16"></line>
+                <line x1="20" y1="12" x2="20" y2="3"></line>
+                <line x1="1" y1="14" x2="7" y2="14"></line>
+                <line x1="9" y1="8" x2="15" y2="8"></line>
+                <line x1="17" y1="16" x2="23" y2="16"></line>
+              </svg>
+              <span>Generator</span>
+            </li>
+            <li class="sidebar-nav-item" data-view="security">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <polyline points="9 12 11 14 15 10"></polyline>
+              </svg>
+              <span>Security Audit</span>
+            </li>
+            <li class="sidebar-nav-item" data-view="settings">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                ></path>
+              </svg>
+              <span>Storage & Sync</span>
+            </li>
+          </ul>
+
+          <div class="sidebar-quick-card">
+            <h5>Client-Side Privacy</h5>
+            <p>
+              Passwords are encrypted and decrypted locally with authenticated
+              AES-GCM-256.
+            </p>
+            <button
+              class="btn btn-secondary btn-sm"
+              style="width: 100%"
+              onclick="AccFoUI.switchView('generator')"
+            >
+              Quick Generator
+            </button>
+          </div>
+        </aside>
+
+        <!-- Main Dynamic Content Views -->
+        <main class="app-main-content">
+          <!-- 1. VAULT VIEW -->
+          <section id="view-vault" class="view-pane active">
+            <!-- Stats Row -->
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon red">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M21 2l-2 2m-1.5 1.5L16 7l-1.5-1.5L13 7l-2-2 1.5-1.5L11 2"
+                    ></path>
+                    <circle cx="7.5" cy="15.5" r="4.5"></circle>
+                  </svg>
+                </div>
+                <div class="stat-info">
+                  <h3 id="stat-total-accounts">0</h3>
+                  <p>Total Items</p>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon emerald">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+                    ></path>
+                    <polyline points="9 12 11 14 15 10"></polyline>
+                  </svg>
+                </div>
+                <div class="stat-info">
+                  <h3 id="stat-strong-passwords">0</h3>
+                  <p>Strong Passwords</p>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon cyan">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline
+                      points="22 12 18 12 15 21 9 3 6 12 2 12"
+                    ></polyline>
+                  </svg>
+                </div>
+                <div class="stat-info">
+                  <h3 id="stat-security-score">100%</h3>
+                  <p>Vault Health</p>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon amber">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <line x1="22" y1="12" x2="2" y2="12"></line>
+                    <path
+                      d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"
+                    ></path>
+                    <line x1="6" y1="16" x2="6.01" y2="16"></line>
+                    <line x1="10" y1="16" x2="10.01" y2="16"></line>
+                  </svg>
+                </div>
+                <div class="stat-info">
+                  <h3 style="font-size: 1.1rem; text-transform: uppercase">
+                    PBKDF2
+                  </h3>
+                  <p>600k Iterations</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Controls: Search & Category Chips -->
+            <div class="vault-controls">
+              <div class="search-action-row">
+                <div class="input-wrapper vault-search-box">
+                  <span class="input-icon">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                  </span>
+                  <input
+                    type="text"
+                    id="vault-search-input"
+                    class="form-input"
+                    placeholder="Search items by service, username, website, tags..."
+                  />
+                  <span class="kbd-hint">/</span>
+                </div>
+
+                <select
+                  id="vault-sort-select"
+                  class="form-select"
+                  style="
+                    width: auto;
+                    background: var(--bg-card);
+                    padding: 0.75rem 1rem;
+                  "
+                >
+                  <option value="service-asc">Name (A–Z)</option>
+                  <option value="service-desc">Name (Z–A)</option>
+                  <option value="recent">Recently Modified</option>
+                  <option value="oldest">Oldest First</option>
+                </select>
+
+                <button
+                  class="btn btn-secondary btn-icon"
+                  onclick="AccFoUI.openModal('modal-import-credentials')"
+                  title="Import from CSV, JSON, or Bitwarden"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Category Pills -->
+              <div class="category-filter-bar">
+                <button class="category-chip active" data-category="all">
+                  All Items
+                </button>
+                <button class="category-chip" data-category="favorites">
+                  Favorites
+                </button>
+                <button class="category-chip" data-category="Social">
+                  Social
+                </button>
+                <button class="category-chip" data-category="Work">Work</button>
+                <button class="category-chip" data-category="Finance">
+                  Finance
+                </button>
+                <button class="category-chip" data-category="Personal">
+                  Personal
+                </button>
+                <button class="category-chip" data-category="Utilities">
+                  Utilities
+                </button>
+              </div>
+            </div>
+
+            <!-- Cards Grid -->
+            <div id="vault-cards-grid" class="cards-grid"></div>
+
+            <!-- Empty Vault State -->
+            <div
+              id="vault-empty-state"
+              class="empty-vault-state"
+              style="display: none"
+            >
+              <div class="empty-icon">
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect
+                    x="3"
+                    y="11"
+                    width="18"
+                    height="11"
+                    rx="2"
+                    ry="2"
+                  ></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </div>
+              <h3>No Items Found</h3>
+              <p id="empty-state-desc">
+                Your vault is currently empty. Add your first credential or
+                import an existing file.
+              </p>
+              <div style="display: flex; gap: 0.75rem">
+                <button class="btn btn-primary" data-action="add-account">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  <span>Add Item</span>
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  onclick="AccFoUI.openModal('modal-import-credentials')"
+                >
+                  <span>Import Backup</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2. PASSWORD GENERATOR STUDIO VIEW -->
+          <section id="view-generator" class="view-pane">
+            <div class="generator-container">
+              <div class="generator-result-card">
+                <div
+                  class="section-header"
+                  style="border: none; padding-bottom: 0"
+                >
+                  <div class="section-title-group">
+                    <h3>Password Generator</h3>
+                    <p>Cryptographically secure CSPRNG random generation.</p>
+                  </div>
+                </div>
+
+                <div class="generated-password-box">
+                  <div
+                    id="generated-password-output"
+                    class="generated-password-text font-mono"
+                  >
+                    Generating...
+                  </div>
+                  <div class="generator-actions">
+                    <button
+                      class="btn btn-secondary btn-icon"
+                      onclick="AccFoUI.refreshGenerator()"
+                      title="Regenerate"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path
+                          d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+                        ></path>
+                      </svg>
+                    </button>
+                    <button
+                      class="btn btn-primary btn-sm"
+                      id="btn-copy-generated"
+                      onclick="
+                        AccFoUI.copyText(
+                          document.getElementById('generated-password-output')
+                            .textContent,
+                          'Password copied to clipboard',
+                        )
+                      "
+                    >
+                      <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <rect
+                          x="9"
+                          y="9"
+                          width="13"
+                          height="13"
+                          rx="2"
+                          ry="2"
+                        ></rect>
+                        <path
+                          d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                        ></path>
+                      </svg>
+                      <span>Copy</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="entropy-badge-row">
+                  <span
+                    id="generator-entropy-text"
+                    class="text-secondary font-mono"
+                    >0 bits of entropy</span
+                  >
+                  <span id="generator-crack-time" class="text-success font-mono"
+                    >Crack time: Instant</span
+                  >
+                </div>
+                <div class="strength-bar-track">
+                  <div
+                    id="generator-meter-fill"
+                    class="strength-bar-fill"
+                    style="width: 80%; background-color: var(--color-emerald)"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Generator Controls -->
+              <div class="length-slider-container">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                  "
+                >
+                  <label class="form-label" style="margin: 0">Length</label>
+                  <span
+                    id="gen-length-display"
+                    class="font-mono text-gradient-red"
+                    style="font-weight: 700; font-size: 1.2rem"
+                    >18</span
+                  >
+                </div>
+                <input
+                  type="range"
+                  id="gen-length-slider"
+                  class="range-slider"
+                  min="8"
+                  max="64"
+                  value="18"
+                />
+              </div>
+
+              <!-- Options Grid -->
+              <div class="generator-options-grid">
+                <label class="option-toggle-card">
+                  <div>
+                    <strong>Uppercase Letters (A–Z)</strong>
+                    <div class="text-muted" style="font-size: 0.78rem">
+                      Include capital characters
+                    </div>
+                  </div>
+                  <div class="toggle-switch">
+                    <input type="checkbox" id="gen-opt-upper" checked />
+                    <span class="slider-round"></span>
+                  </div>
+                </label>
+
+                <label class="option-toggle-card">
+                  <div>
+                    <strong>Lowercase Letters (a–z)</strong>
+                    <div class="text-muted" style="font-size: 0.78rem">
+                      Include small characters
+                    </div>
+                  </div>
+                  <div class="toggle-switch">
+                    <input type="checkbox" id="gen-opt-lower" checked />
+                    <span class="slider-round"></span>
+                  </div>
+                </label>
+
+                <label class="option-toggle-card">
+                  <div>
+                    <strong>Numbers (0–9)</strong>
+                    <div class="text-muted" style="font-size: 0.78rem">
+                      Include numerical digits
+                    </div>
+                  </div>
+                  <div class="toggle-switch">
+                    <input type="checkbox" id="gen-opt-nums" checked />
+                    <span class="slider-round"></span>
+                  </div>
+                </label>
+
+                <label class="option-toggle-card">
+                  <div>
+                    <strong>Special Symbols (!@#$)</strong>
+                    <div class="text-muted" style="font-size: 0.78rem">
+                      Include punctuation and symbols
+                    </div>
+                  </div>
+                  <div class="toggle-switch">
+                    <input type="checkbox" id="gen-opt-symbols" checked />
+                    <span class="slider-round"></span>
+                  </div>
+                </label>
+
+                <label class="option-toggle-card" style="grid-column: span 2">
+                  <div>
+                    <strong>Avoid Ambiguous Characters (1, l, I, 0, O)</strong>
+                    <div class="text-muted" style="font-size: 0.78rem">
+                      Exclude confusing visual lookalikes
+                    </div>
+                  </div>
+                  <div class="toggle-switch">
+                    <input type="checkbox" id="gen-opt-avoid-ambiguous" />
+                    <span class="slider-round"></span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. SECURITY HEALTH VIEW -->
+          <section id="view-security" class="view-pane">
+            <div class="settings-container">
+              <div class="settings-section">
+                <div class="section-header">
+                  <div class="section-title-group">
+                    <h3>Security Health Audit</h3>
+                    <p>
+                      Evaluation of password strength, duplicates, and health
+                      score.
+                    </p>
+                  </div>
+                  <span
+                    id="audit-health-score"
+                    class="badge badge-emerald"
+                    style="font-size: 1rem; padding: 0.4rem 0.8rem"
+                    >100%</span
+                  >
+                </div>
+
+                <div class="stats-grid" style="margin-bottom: 0">
+                  <div class="stat-card">
+                    <div class="stat-icon emerald">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+                        ></path>
+                        <polyline points="9 12 11 14 15 10"></polyline>
+                      </svg>
+                    </div>
+                    <div class="stat-info">
+                      <h3 id="audit-strong-count">0</h3>
+                      <p>Strong & Unique</p>
+                    </div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="stat-icon red">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                        ></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                      </svg>
+                    </div>
+                    <div class="stat-info">
+                      <h3 id="audit-weak-count">0</h3>
+                      <p>Weak Passwords</p>
+                    </div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="stat-icon amber">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path
+                          d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div class="stat-info">
+                      <h3 id="audit-reused-count">0</h3>
+                      <p>Reused Passwords</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="audit-issues-list" style="margin-top: 1.25rem"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4. SETTINGS & SYNC VIEW -->
+          <section id="view-settings" class="view-pane">
+            <div class="settings-container">
+              <!-- Local File Linking Section -->
+              <div class="settings-section">
+                <div class="section-header">
+                  <div class="section-title-group">
+                    <h3>Local File Linking</h3>
+                    <p>
+                      Link a physical <code class="font-mono">.accfo</code> file
+                      on your local drive for real-time automatic saving.
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  id="settings-local-file-info"
+                  style="
+                    background: var(--bg-input);
+                    padding: 1rem;
+                    border-radius: var(--radius-md);
+                    font-size: 0.88rem;
+                    border: 1px solid var(--border-subtle);
+                  "
+                >
+                  Checking local file link...
+                </div>
+
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap">
+                  <button
+                    class="btn btn-primary"
+                    onclick="window.accfoApp.linkNewFile()"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>Create & Link New File (.accfo)</span>
+                  </button>
+                  <button
+                    class="btn btn-secondary"
+                    onclick="window.accfoApp.linkExistingFile()"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"
+                      ></path>
+                    </svg>
+                    <span>Link Existing File</span>
+                  </button>
+                  <button
+                    class="btn btn-danger-outline"
+                    onclick="window.accfoApp.unlinkLocalFile()"
+                  >
+                    <span>Unlink File</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Self-Hostable Cross-Device Remote Sync -->
+              <div class="settings-section">
+                <div class="section-header">
+                  <div class="section-title-group">
+                    <h3>Cross-Device Synchronization</h3>
+                    <p>
+                      Configure self-hosted endpoints for encrypted cross-device
+                      sync.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="sync-provider-tabs">
+                  <button class="provider-tab active" data-provider="none">
+                    Local Only
+                  </button>
+                  <button class="provider-tab" data-provider="self_hosted">
+                    Self-Hosted Server
+                  </button>
+                  <button class="provider-tab" data-provider="webdav">
+                    WebDAV / Nextcloud
+                  </button>
+                  <button class="provider-tab" data-provider="s3_minio">
+                    MinIO / S3
+                  </button>
+                </div>
+
+                <!-- WebDAV Pane -->
+                <div id="sync-pane-webdav" style="display: none">
+                  <div class="form-group">
+                    <label class="form-label"
+                      >Nextcloud / WebDAV Server URL</label
+                    >
+                    <input
+                      type="url"
+                      id="webdav-url"
+                      class="form-input"
+                      placeholder="https://nextcloud.example.com/remote.php/dav/files/username/"
+                    />
+                  </div>
+                  <div
+                    style="
+                      display: grid;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 1rem;
+                    "
+                  >
+                    <div class="form-group">
+                      <label class="form-label">Username</label>
+                      <input
+                        type="text"
+                        id="webdav-user"
+                        class="form-input"
+                        placeholder="Nextcloud username"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">App Password / Token</label>
+                      <input
+                        type="password"
+                        id="webdav-pass"
+                        class="form-input"
+                        placeholder="App Password"
+                      />
+                    </div>
+                  </div>
+                  <button id="btn-save-webdav" class="btn btn-primary btn-sm">
+                    Save & Connect
+                  </button>
+                </div>
+
+                <!-- Self-Hosted Sync Server Pane -->
+                <div id="sync-pane-self-hosted" style="display: none">
+                  <p
+                    style="
+                      font-size: 0.85rem;
+                      color: var(--text-secondary);
+                      margin-bottom: 1rem;
+                    "
+                  >
+                    Connect to your standalone AccFo Python/Node sync
+                    microservice (Run
+                    <code class="font-mono">python sync_server/server.py</code
+                    >).
+                  </p>
+                  <div class="form-group">
+                    <label class="form-label">Sync Endpoint URL</label>
+                    <input
+                      type="url"
+                      id="self-hosted-endpoint"
+                      class="form-input"
+                      placeholder="http://localhost:8765/api/vault"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Auth Token (Bearer Token)</label>
+                    <input
+                      type="password"
+                      id="self-hosted-token"
+                      class="form-input"
+                      placeholder="accfo_secret_token"
+                    />
+                  </div>
+                  <button
+                    id="btn-save-self-hosted"
+                    class="btn btn-primary btn-sm"
+                  >
+                    Save & Connect
+                  </button>
+                </div>
+
+                <!-- S3 / MinIO Pane -->
+                <div id="sync-pane-s3" style="display: none">
+                  <p
+                    style="
+                      font-size: 0.85rem;
+                      color: var(--text-secondary);
+                      margin-bottom: 1rem;
+                    "
+                  >
+                    Store encrypted vault payloads directly in a self-hosted
+                    MinIO or S3 bucket.
+                  </p>
+                  <div class="form-group">
+                    <label class="form-label">S3 / MinIO Endpoint</label>
+                    <input
+                      type="url"
+                      id="s3-endpoint"
+                      class="form-input"
+                      placeholder="https://minio.example.com"
+                    />
+                  </div>
+                  <div
+                    style="
+                      display: grid;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 1rem;
+                    "
+                  >
+                    <div class="form-group">
+                      <label class="form-label">Bucket Name</label>
+                      <input
+                        type="text"
+                        id="s3-bucket"
+                        class="form-input"
+                        placeholder="accfo-vaults"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label"
+                        >Bearer Token / Access Key</label
+                      >
+                      <input
+                        type="password"
+                        id="s3-token"
+                        class="form-input"
+                        placeholder="Token"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Backup & Export Section -->
+              <div class="settings-section">
+                <div class="section-header">
+                  <div class="section-title-group">
+                    <h3>Backup & Migration</h3>
+                    <p>
+                      Export encrypted archives or import credentials from other
+                      managers.
+                    </p>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap">
+                  <button id="btn-export-vault" class="btn btn-secondary">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                      ></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    <span>Export Encrypted Backup (.accfo)</span>
+                  </button>
+                  <button
+                    class="btn btn-secondary"
+                    onclick="AccFoUI.openModal('modal-import-credentials')"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                      ></path>
+                      <polyline points="17 8 12 3 7 8"></polyline>
+                      <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <span>Import CSV / JSON / Bitwarden</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+
+      <!-- Mobile Bottom Navigation -->
+      <nav class="mobile-bottom-nav">
+        <button class="mobile-nav-btn active" data-view="vault">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M21 2l-2 2m-1.5 1.5L16 7l-1.5-1.5L13 7l-2-2 1.5-1.5L11 2"
+            ></path>
+            <circle cx="7.5" cy="15.5" r="4.5"></circle>
+          </svg>
+          <span>Items</span>
+        </button>
+        <button class="mobile-nav-btn" data-view="generator">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+          <span>Generator</span>
+        </button>
+        <button class="mobile-nav-btn" data-view="security">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <polyline points="9 12 11 14 15 10"></polyline>
+          </svg>
+          <span>Audit</span>
+        </button>
+        <button class="mobile-nav-btn" data-view="settings">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="3"></circle>
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+            ></path>
+          </svg>
+          <span>Settings</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- ========================================================================
+       MODALS
+       ======================================================================== -->
+
+    <!-- 1. Add / Edit Item Modal -->
+    <div id="modal-account-editor" class="modal-backdrop">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modal-account-title">Add Item</h3>
+          <button
+            class="btn-icon"
+            data-close-modal="modal-account-editor"
+            title="Close"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <form id="form-account-editor">
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label">Service / Title *</label>
+              <input
+                type="text"
+                id="form-acc-service"
+                class="form-input"
+                placeholder="e.g. GitHub, Proton, AWS"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Username / Email</label>
+              <input
+                type="text"
+                id="form-acc-username"
+                class="form-input"
+                placeholder="e.g. username or user@example.com"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <span>Password *</span>
+                <button
+                  type="button"
+                  id="btn-inline-generate-pwd"
+                  style="
+                    color: var(--color-imperial-red);
+                    font-size: 0.78rem;
+                    font-weight: 600;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.25rem;
+                  "
+                >
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <polyline points="1 20 1 14 7 14"></polyline>
+                    <path
+                      d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+                    ></path>
+                  </svg>
+                  <span>Generate Strong</span>
+                </button>
+              </label>
+              <div class="input-wrapper">
+                <input
+                  type="password"
+                  id="form-acc-password"
+                  class="form-input font-mono"
+                  placeholder="Password"
+                  required
+                />
+                <button
+                  type="button"
+                  class="input-action-btn"
+                  id="btn-toggle-modal-pwd"
+                  title="Toggle password visibility"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                    ></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Website URL</label>
+              <input
+                type="url"
+                id="form-acc-url"
+                class="form-input"
+                placeholder="https://example.com"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select
+                id="form-acc-category"
+                class="form-select"
+                style="background: var(--bg-input)"
+              >
+                <option value="General">General</option>
+                <option value="Work">Work</option>
+                <option value="Finance">Finance</option>
+                <option value="Social">Social</option>
+                <option value="Personal">Personal</option>
+                <option value="Utilities">Utilities</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Notes</label>
+              <textarea
+                id="form-acc-notes"
+                class="form-textarea"
+                placeholder="Recovery keys, 2FA backup codes, custom notes..."
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-close-modal="modal-account-editor"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Save Item</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 2. Delete Confirmation Modal -->
+    <div id="modal-delete-confirm" class="modal-backdrop">
+      <div class="modal-content" style="max-width: 440px">
+        <div class="modal-header">
+          <h3
+            style="
+              color: var(--color-imperial-red);
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+            "
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+              ></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span>Delete Item</span>
+          </h3>
+          <button
+            class="btn-icon"
+            data-close-modal="modal-delete-confirm"
+            title="Close"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            Permanently remove
+            <strong id="delete-modal-service-name" style="color: #ffffff"
+              >this item</strong
+            >
+            from your encrypted vault?
+          </p>
+          <p
+            class="text-secondary"
+            style="font-size: 0.85rem; margin-top: 0.5rem"
+          >
+            This action cannot be undone.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-close-modal="modal-delete-confirm"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            id="delete-confirm-btn"
+            class="btn btn-primary"
+            style="background: var(--color-imperial-red)"
+          >
+            Delete Permanently
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Prompt Link File Modal (First-time onboarding) -->
+    <div id="modal-prompt-link-file" class="modal-backdrop">
+      <div class="modal-content" style="max-width: 500px">
+        <div class="modal-header">
+          <h3>Link Local File for Data Ownership</h3>
+          <button
+            class="btn-icon"
+            data-close-modal="modal-prompt-link-file"
+            title="Close"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="dropzone-icon" style="margin: 0 auto 1.25rem auto">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="22" y1="12" x2="2" y2="12"></line>
+              <path
+                d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"
+              ></path>
+              <line x1="6" y1="16" x2="6.01" y2="16"></line>
+              <line x1="10" y1="16" x2="10.01" y2="16"></line>
+            </svg>
+          </div>
+          <p style="margin-bottom: 0.75rem">
+            AccFo can bind directly to a local
+            <code class="font-mono">.accfo</code> file on your drive using the
+            File System Access API.
+          </p>
+          <p class="text-secondary" style="font-size: 0.85rem">
+            All vault additions and changes will be automatically written
+            straight to your physical drive. No cloud account required.
+          </p>
+        </div>
+        <div class="modal-footer" style="justify-content: space-between">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-close-modal="modal-prompt-link-file"
+          >
+            Skip
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="window.accfoApp.linkNewFile()"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Link Local File</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Universal Import Modal -->
+    <div id="modal-import-credentials" class="modal-backdrop">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Import Credentials</h3>
+          <button
+            class="btn-icon"
+            data-close-modal="modal-import-credentials"
+            title="Close"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p
+            class="text-secondary"
+            style="font-size: 0.85rem; margin-bottom: 1rem"
+          >
+            Import credentials from a standard CSV file, Bitwarden JSON export,
+            or an existing AccFo <code class="font-mono">.accfo</code> archive.
+          </p>
+
+          <div
+            class="dropzone-box"
+            onclick="document.getElementById('import-file-input').click()"
+          >
+            <div class="dropzone-icon">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+            </div>
+            <p class="dropzone-title">Click to select or drop file</p>
+            <span class="dropzone-subtitle">.csv, .json, .accfo</span>
+            <input
+              type="file"
+              id="import-file-input"
+              accept=".csv,.json,.accfo"
+              style="display: none"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-close-modal="modal-import-credentials"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/icons.js"></script>
+    <script src="js/crypto.js"></script>
+    <script src="js/file-system.js"></script>
+    <script src="js/sync.js"></script>
+    <script src="js/password-generator.js"></script>
+    <script src="js/vault.js"></script>
+    <script src="js/sqlite-migration.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
